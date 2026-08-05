@@ -5,32 +5,33 @@
 ======================================== */
 
 body {
-    font-family: "Zen Kaku Gothic New", sans-serif;
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 1.7;
-    color: #183B4E;
-    background-color: #F3F0E8;
+   font-family: "Zen Kaku Gothic New", sans-serif;
+   font-size: 16px;
+   font-weight: 400;
+   line-height: 1.7;
+   color: #183B4E;
+   background-color: #F3F0E8;
+
 }
 
 img {
-    max-width: 100%;
-    height: auto;
-    vertical-align: bottom;
+   max-width: 100%;
+   height: auto;
+   vertical-align: bottom;
 }
 
 a {
-    color: inherit;
-    text-decoration: none;
+   color: inherit;
+   text-decoration: none;
 }
 
 ul {
-    list-style: none;
+   list-style: none;
 }
 
 .container {
-    width: min(1200px, calc(100% - 80px));
-    margin: 0 auto;
+   width: min(1200px, calc(100% - 80px));
+   margin: 0 auto;
 }
 
 /* ========================================
@@ -44,9 +45,115 @@ ul {
    Header
 ======================================== */
 
+header {
+   position: absolute;
+   top: 0;
+   left: 0;
+   z-index: 100;
+   width: 100%;
+   height: 88px;
+   padding: 0 40px;
+   box-sizing: border-box;
+
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+
+   background-color: transparent;
+}
+
+.header-nav a {
+   color: #fff;
+   text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+}
+
+.header-nav ul {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   gap: 40px;
+   padding: 20px 0;
+   color: #fff;
+   list-style: none;
+   margin: 0 auto;
+}
+
+
+
 /* ========================================
    FV
 ======================================== */
+
+#fv {
+   position: relative;
+   height: calc(100vh - 88px);
+   min-height: 700px;
+   background-image: url(../images/fv.png);
+   background-size: cover;
+   background-position: center-top;
+}
+
+#fv .container {
+   position: relative;
+   width: 100%;
+   max-width: none;
+   height: 100%;
+   padding-top: 80px;
+   /* 透明ヘッダー分 */
+   box-sizing: border-box;
+}
+
+/* 左側のメインコピー */
+.fv-title {
+   position: absolute;
+   top: 125px;
+   left: 8.9%;
+
+   margin: 0;
+   color: #fff;
+   font-size: 80px;
+   font-weight: 400;
+   line-height: 1.25;
+   letter-spacing: 0.25em;
+}
+
+/* 左側のサブコピー */
+.fv-subtitle {
+   position: absolute;
+   top: 470px;
+   left: 9.4%;
+
+   margin: 0;
+   color: #fff;
+   font-size: 32px;
+   font-weight: 400;
+   letter-spacing: 0.12em;
+}
+
+/* 右側のイベントロゴ */
+.fv-logo {
+   position: absolute;
+   top: 304px;
+   right: 8.8%;
+   width: 334px;
+   margin: 0;
+}
+
+/* 右側の開催期間 */
+.fv-date {
+   position: absolute;
+   top: 446px;
+   right: 3%;
+   width: 500px;
+   margin: 0;
+}
+
+.fv-logo img,
+.fv-date img {
+   display: block;
+   width: 100%;
+   height: auto;
+}
 
 /* ========================================
    INTRO
