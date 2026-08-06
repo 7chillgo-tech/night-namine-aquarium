@@ -44,6 +44,22 @@ ul {
 
 }
 
+#constellation-svg {
+   position: absolute;
+   top: 0;
+   left: 0;
+   width: 100%;
+   pointer-events: none;
+   z-index: 1;
+}
+
+
+.star {
+   position: absolute;
+   top: -20px;
+   right: -10px;
+}
+
 /* ========================================
    Common
 ======================================== */
@@ -106,7 +122,8 @@ header {
 
    background-color: transparent;
 
-   transition: background-color 0.3s ease, backdrop-filter 0.3s ease;
+   opacity: 1;
+   transition: opacity 0.3s ease;
 
 }
 
@@ -252,6 +269,8 @@ header.is-scrolled {
    max-width: 500px;
    margin-left: 125px;
    margin-top: 40px;
+   position: relative;
+   z-index: 2;
 }
 
 .intro-title {
@@ -282,6 +301,7 @@ header.is-scrolled {
    position: relative;
    width: 100%;
    max-width: 500px;
+   z-index: 2;
 }
 
 .intro-image2 {
