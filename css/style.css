@@ -34,19 +34,65 @@ ul {
    margin: 0 auto;
 }
 
+#intro,
+#how-to-enjoy,
+#model-course,
+#news,
+#access,
+#ticket {
+   scroll-margin-top: 0;
+
+}
+
 /* ========================================
    Common
 ======================================== */
 
 /* ボタン */
+
+.button {
+   display: inline-block;
+   padding: 10px 20px;
+   color: #183B4E;
+   font-size: 16px;
+   font-weight: 400;
+   text-align: center;
+   border-radius: 12px;
+   border: 1px solid #183B4E;
+   transition: all 0.3s ease;
+}
+
+.button:hover {
+   color: #fff;
+   background-color: #183B4E;
+}
+
 /* セクションタイトル */
+
+.section-title {
+   font-family: 'DM Sans', sans-serif;
+   font-size: 24px;
+   font-weight: 700;
+   line-height: 1.2;
+   letter-spacing: 0.05em;
+   margin-top: 5px;
+   margin-left: 30px;
+}
+
+.section-subtitle {
+   font-size: 24px;
+   font-weight: 500;
+   line-height: 1.5;
+   letter-spacing: 0.1em;
+}
 
 /* ========================================
    Header
 ======================================== */
 
 header {
-   position: absolute;
+   position: fixed;
+   /* absolute → fixed に変更 */
    top: 0;
    left: 0;
    z-index: 100;
@@ -60,6 +106,17 @@ header {
    align-items: center;
 
    background-color: transparent;
+
+   opacity: 1;
+   /* 追加 */
+   transition: opacity 0.3s ease;
+   /* 追加 */
+}
+
+header.is-hidden {
+   /* 新規追加 */
+   opacity: 0;
+   pointer-events: none;
 }
 
 .header-nav a {
@@ -86,7 +143,7 @@ header {
 
 #fv {
    position: relative;
-   height: calc(100vh - 88px);
+   height: 100vh;
    min-height: 700px;
    background-image: url(../images/fv.png);
    background-size: cover;
@@ -102,6 +159,19 @@ header {
    /* 透明ヘッダー分 */
    box-sizing: border-box;
 }
+
+/* 一旦コメントアウト、波デザイン確定後に差し替え予定
+#fv::after {
+   content: "";
+   position: absolute;
+   left: 0;
+   right: 0;
+   bottom: 0;
+   height: 180px;
+   background: linear-gradient(to bottom, transparent, #f5f3ee);
+   pointer-events: none;
+}
+*/
 
 /* 左側のメインコピー */
 .fv-title {
@@ -159,6 +229,82 @@ header {
    INTRO
 ======================================== */
 
+#intro {
+   position: relative;
+   padding: 120px 0 80px;
+   background: radial-gradient(circle 500px at 40% 50%,
+         #52A1B1 0%,
+         #9CC5CA 44%,
+         #DFE6E1 78%,
+         #F3F0E8 100%);
+
+}
+
+
+#intro .container {
+   display: flex;
+   justify-content: flex-start;
+   align-items: center;
+   gap: 20px;
+}
+
+.intro-left {
+   flex: 1;
+}
+
+.intro-content {
+   max-width: 500px;
+   margin-left: 125px;
+   margin-top: 40px;
+}
+
+.intro-title {
+   font-size: 43px;
+   font-weight: 500;
+   line-height: 1.5;
+   letter-spacing: 0.05em;
+   color: #183B4E;
+   margin-bottom: 40px;
+}
+
+.intro-right {
+   flex: 1;
+   position: relative;
+   display: flex;
+   justify-content: flex-start;
+}
+
+.intro-description {
+   font-size: 16px;
+   font-weight: 500;
+   line-height: 1.7;
+   color: #252829;
+   margin-bottom: 40px;
+}
+
+.intro-image {
+   position: relative;
+   width: 100%;
+   max-width: 500px;
+}
+
+.intro-image2 {
+   position: absolute;
+   left: 21px;
+   top: 250px;
+   width: 191px;
+   height: 269px;
+   overflow: hidden;
+}
+
+.intro-image2 img {
+   width: 100%;
+   height: 100%;
+   object-fit: cover;
+   object-position: top;
+}
+
+.
 /* ========================================
    HOW TO ENJOY
 ======================================== */
