@@ -10,4 +10,10 @@ window.addEventListener('scroll', () => {
     scrollTimer = setTimeout(() => {
         header.classList.remove('is-hidden'); // 止まって300ms後に表示
     }, 300);
+
+    if (window.scrollY > 0) {
+        header.classList.add('is-scrolled');
+    } else {
+        header.classList.remove('is-scrolled');
+    }
 });

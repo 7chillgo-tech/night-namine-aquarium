@@ -92,7 +92,6 @@ ul {
 
 header {
    position: fixed;
-   /* absolute → fixed に変更 */
    top: 0;
    left: 0;
    z-index: 100;
@@ -108,15 +107,18 @@ header {
    background-color: transparent;
 
    opacity: 1;
-   /* 追加 */
    transition: opacity 0.3s ease;
-   /* 追加 */
+
 }
 
 header.is-hidden {
-   /* 新規追加 */
    opacity: 0;
    pointer-events: none;
+}
+
+header.is-scrolled {
+   background-color: rgba(24, 59, 78, 0.6);
+   backdrop-filter: blur(10px);
 }
 
 .header-nav a {
@@ -304,7 +306,7 @@ header.is-hidden {
    object-position: top;
 }
 
-.
+
 /* ========================================
    HOW TO ENJOY
 ======================================== */
