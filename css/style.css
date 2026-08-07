@@ -53,15 +53,6 @@ ul {
    z-index: 1;
 }
 
-
-.star {
-   width: 20px;
-   position: absolute;
-   top: -20px;
-   right: -10px;
-   z-index: 2;
-}
-
 /* ========================================
    Common
 ======================================== */
@@ -102,6 +93,16 @@ ul {
    font-weight: 500;
    line-height: 1.5;
    letter-spacing: 0.1em;
+}
+
+/* ========================================
+   星座
+======================================== */
+
+.star {
+   width: 20px;
+   position: absolute;
+   z-index: 2;
 }
 
 /* ========================================
@@ -254,7 +255,6 @@ header.is-scrolled {
 
 }
 
-
 #intro .container {
    display: flex;
    justify-content: flex-start;
@@ -322,13 +322,37 @@ header.is-scrolled {
 }
 
 
+#intro .star {
+   width: 20px;
+   position: absolute;
+   z-index: 2;
+   top: -20px;
+   right: -10px;
+}
+
 /* ========================================
    HOW TO ENJOY
 ======================================== */
 
+#how-to-enjoy {
+   position: relative;
+   padding: 120px 0 80px;
+   background-color: #F3F0E8;
+   background-size: cover;
+}
+
+
+
 /* ========================================
    MODEL COURSE
 ======================================== */
+
+#model-course {
+   background-image: url(../images/modelcourse.png);
+   background-repeat: no-repeat;
+   background-position: center top;
+   background-size: cover;
+}
 
 /* ========================================
    NEWS
@@ -341,6 +365,12 @@ header.is-scrolled {
 /* ========================================
    TICKET
 ======================================== */
+
+#ticket {
+   background-image: url(../images/ticket.png);
+   background-repeat: no-repeat;
+   background-position: center top;
+}
 
 /* ========================================
    Footer
