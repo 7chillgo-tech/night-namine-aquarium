@@ -5,7 +5,7 @@
 ======================================== */
 
 body {
-   font-family: "Zen Kaku Gothic New", sans-serif;
+   font-family: 'Zen Kaku Gothic New', sans-serif;
    font-size: 16px;
    font-weight: 400;
    line-height: 1.7;
@@ -40,7 +40,7 @@ ul {
 #news,
 #access,
 #ticket {
-   scroll-margin-top: 0;
+   scroll-margin-top: 88px;
 
 }
 
@@ -55,6 +55,7 @@ ul {
 
 
 .star {
+   width: 20px;
    position: absolute;
    top: -20px;
    right: -10px;
@@ -133,12 +134,12 @@ header.is-scrolled {
    backdrop-filter: blur(10px);
 }
 
-.header-nav a {
+.header__nav a {
    color: #fff;
    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
 }
 
-.header-nav ul {
+.header__nav ul {
    display: flex;
    justify-content: space-between;
    align-items: center;
@@ -146,7 +147,6 @@ header.is-scrolled {
    padding: 20px 0;
    color: #fff;
    list-style: none;
-   margin: 0 auto;
 }
 
 
@@ -188,7 +188,7 @@ header.is-scrolled {
 */
 
 /* 左側のメインコピー */
-.fv-title {
+.fv__title {
    position: absolute;
    top: 125px;
    left: 8.9%;
@@ -202,7 +202,7 @@ header.is-scrolled {
 }
 
 /* 左側のサブコピー */
-.fv-subtitle {
+.fv__subtitle {
    position: absolute;
    top: 470px;
    left: 9.4%;
@@ -215,7 +215,7 @@ header.is-scrolled {
 }
 
 /* 右側のイベントロゴ */
-.fv-logo {
+.fv__logo {
    position: absolute;
    top: 304px;
    right: 8.8%;
@@ -224,7 +224,7 @@ header.is-scrolled {
 }
 
 /* 右側の開催期間 */
-.fv-date {
+.fv__date {
    position: absolute;
    top: 446px;
    right: 3%;
@@ -232,8 +232,8 @@ header.is-scrolled {
    margin: 0;
 }
 
-.fv-logo img,
-.fv-date img {
+.fv__logo img,
+.fv__date img {
    display: block;
    width: 100%;
    height: auto;
@@ -262,11 +262,11 @@ header.is-scrolled {
    gap: 20px;
 }
 
-.intro-left {
+.intro__left {
    flex: 1;
 }
 
-.intro-content {
+.intro__content {
    max-width: 500px;
    margin-left: 125px;
    margin-top: 40px;
@@ -274,7 +274,7 @@ header.is-scrolled {
    z-index: 2;
 }
 
-.intro-title {
+.intro__title {
    font-size: 43px;
    font-weight: 500;
    line-height: 1.5;
@@ -283,14 +283,14 @@ header.is-scrolled {
    margin-bottom: 40px;
 }
 
-.intro-right {
+.intro__right {
    flex: 1;
    position: relative;
    display: flex;
    justify-content: flex-start;
 }
 
-.intro-description {
+.intro__description {
    font-size: 16px;
    font-weight: 500;
    line-height: 1.7;
@@ -298,14 +298,14 @@ header.is-scrolled {
    margin-bottom: 40px;
 }
 
-.intro-image {
+.intro__image {
    position: relative;
    width: 100%;
    max-width: 500px;
    z-index: 2;
 }
 
-.intro-image2 {
+.intro__image-sub {
    position: absolute;
    left: 21px;
    top: 250px;
@@ -314,7 +314,7 @@ header.is-scrolled {
    overflow: hidden;
 }
 
-.intro-image2 img {
+.intro__image-sub img {
    width: 100%;
    height: 100%;
    object-fit: cover;
