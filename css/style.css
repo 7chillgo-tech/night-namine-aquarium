@@ -32,6 +32,7 @@ ul {
 .container {
    width: min(1200px, calc(100% - 80px));
    margin: 0 auto;
+
 }
 
 #intro,
@@ -79,21 +80,47 @@ ul {
 /* セクションタイトル */
 
 .section-title {
-   font-family: 'DM Sans', sans-serif;
+   position: absolute;
    font-size: 24px;
    font-weight: 700;
    line-height: 1.2;
    letter-spacing: 0.05em;
-   margin-top: 5px;
-   margin-left: 30px;
+   top: 80px;
+   left: 130px;
 }
 
 .section-subtitle {
+   position: absolute;
    font-size: 24px;
    font-weight: 500;
    line-height: 1.5;
    letter-spacing: 0.1em;
+
 }
+
+/* 番号 */
+.number-badge {
+   display: inline-block;
+   width: 56px;
+   height: 56px;
+   line-height: 56px;
+   text-align: center;
+   border-radius: 50%;
+   background-color: #183B4E;
+   color: #fff;
+   font-size: 16px;
+   font-weight: 700;
+   margin-right: 10px;
+}
+
+/* 英字フォント */
+.section-title,
+.number-badge,
+.model-course__time,
+.news__title {
+   font-family: 'DM Sans', sans-serif;
+}
+
 
 /* ========================================
    星座
@@ -131,7 +158,7 @@ header {
 }
 
 header.is-scrolled {
-   background-color: rgba(24, 59, 78, 0.6);
+   background-color: rgba(24, 59, 78, 0.4);
    backdrop-filter: blur(10px);
 }
 
@@ -249,6 +276,7 @@ header.is-scrolled {
    padding: 120px 0 80px;
    background: radial-gradient(circle 500px at 40% 50%,
          #52A1B1 0%,
+         #63A9B6 15%,
          #9CC5CA 44%,
          #DFE6E1 78%,
          #F3F0E8 100%);
@@ -260,6 +288,11 @@ header.is-scrolled {
    justify-content: flex-start;
    align-items: center;
    gap: 20px;
+}
+
+#intro .section-title {
+   top: 80px;
+   left: 130px;
 }
 
 .intro__left {
@@ -305,22 +338,6 @@ header.is-scrolled {
    z-index: 2;
 }
 
-.intro__image-sub {
-   position: absolute;
-   left: 21px;
-   top: 250px;
-   width: 191px;
-   height: 269px;
-   overflow: hidden;
-}
-
-.intro__image-sub img {
-   width: 100%;
-   height: 100%;
-   object-fit: cover;
-   object-position: top;
-}
-
 
 #intro .star {
    width: 20px;
@@ -339,6 +356,109 @@ header.is-scrolled {
    padding: 120px 0 80px;
    background-color: #F3F0E8;
    background-size: cover;
+}
+
+.how-to-enjoy__bg--01 {}
+
+.how-to-enjoy__item {
+   position: relative;
+   min-height: 100vh;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+.how-to-enjoy__content {
+   position: relative;
+   width: 1200px;
+   height: 700px;
+}
+
+.how-to-enjoy__title {
+   font-size: 24px;
+   font-weight: 500;
+   line-height: 1.5;
+   letter-spacing: 0.05em;
+   color: #183B4E;
+   margin-bottom: 40px;
+}
+
+.how-to-enjoy__image--01 {
+   position: absolute;
+   width: 720px;
+   height: 350px;
+   border-radius: 50px;
+   overflow: hidden;
+   top: 77px;
+   left: 394px;
+}
+
+.how-to-enjoy__image--01 img {
+   width: 100%;
+   height: 100%;
+   object-fit: cover;
+}
+
+.how-to-enjoy__description {
+   position: absolute;
+   width: 782px;
+   font-size: 20px;
+   font-weight: 400;
+   line-height: 1.8;
+   color: #252829;
+}
+
+.how-to-enjoy__description--01 {
+   top: 480px;
+   left: 166px;
+   width: 503px;
+}
+
+.how-to-enjoy__image--02 {
+   position: absolute;
+   width: 800px;
+   height: 400px;
+   top: 208px;
+   left: 266px;
+}
+
+.how-to-enjoy__image--02 img {
+   width: 100%;
+   height: 100%;
+
+}
+
+.how-to-enjoy__box {
+   width: 390px;
+}
+
+.how-to-enjoy__gallery--03 {
+   position: absolute;
+   top: 122px;
+   left: 20px;
+   display: flex;
+   gap: 20px;
+}
+
+.how-to-enjoy__image--03 {
+   width: 390px;
+   height: 280px;
+}
+
+.how-to-enjoy__image--03 img {
+   width: 100%;
+   height: 100%;
+}
+
+.how-to-enjoy__price {
+   width: 100%;
+   text-align: center;
+   margin-top: 30px;
+}
+
+.how-to-enjoy__description--03 {
+   top: 540px;
+   left: 440px;
 }
 
 
