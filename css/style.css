@@ -274,7 +274,7 @@ header.is-scrolled {
 #intro {
    position: relative;
    padding: 120px 0 80px;
-   background: radial-gradient(circle 500px at 40% 50%,
+      background: radial-gradient(circle 500px at 40% 50%,
          #52A1B1 0%,
          #63A9B6 15%,
          #9CC5CA 44%,
@@ -358,7 +358,14 @@ header.is-scrolled {
    background-size: cover;
 }
 
-
+.how-to-enjoy__bg--01 {
+      background: radial-gradient(circle 500px at 40% 50%,
+         #52A1B1 0%,
+         #63A9B6 15%,
+         #9CC5CA 44%,
+         #DFE6E1 78%,
+         #F3F0E8 100%);
+}
 
 .how-to-enjoy__item {
    position: relative;
@@ -414,6 +421,15 @@ header.is-scrolled {
    width: 503px;
 }
 
+.how-to-enjoy__item--02{
+      background: radial-gradient(circle 500px at 40% 50%,
+         #52A1B1 0%,
+         #63A9B6 15%,
+         #9CC5CA 44%,
+         #DFE6E1 78%,
+         #F3F0E8 100%);
+}
+
 .how-to-enjoy__image--02 {
    position: absolute;
    width: 800px;
@@ -431,6 +447,15 @@ header.is-scrolled {
 .how-to-enjoy__description--02 {
    top: 650px;
    left:700px;
+}
+
+.how-to-enjoy__item--03{
+      background: radial-gradient(circle 500px at 40% 50%,
+         #52A1B1 0%,
+         #63A9B6 15%,
+         #9CC5CA 44%,
+         #DFE6E1 78%,
+         #F3F0E8 100%);
 }
 
 .how-to-enjoy__box {
@@ -546,7 +571,14 @@ header.is-scrolled {
 
 #news {
    position: relative;
+      background: radial-gradient(circle 500px at 40% 50%,
+         #52A1B1 0%,
+         #63A9B6 15%,
+         #9CC5CA 44%,
+         #DFE6E1 78%,
+         #F3F0E8 100%);
 }
+
 
 /* ========================================
    ACCESS
@@ -565,19 +597,42 @@ header.is-scrolled {
    color:#fff;
    background-image: url(../images/ticket.png);
    background-repeat: no-repeat;
-   background-position: center top;
+   background-position: center 50% ;
    background-size: cover;
+    min-height: 500px;   
+    display: flex;   
+    align-items: center;  
+}
+
+#ticket .button {
+   color:#fff;
+   border-color:#fff;
 }
 
 .ticket__content,.ticket__title {
    font-weight: 300;
 }
 
+.ticket__title {
+   padding-bottom: 30px;
+}
+
+.ticket__content{
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   gap: 40px;
+   min-height: 320px;
+}
+
+
+
 /* ========================================
    Footer
 ======================================== */
 
-#footer{
+footer{
    position: relative;
 }
 
