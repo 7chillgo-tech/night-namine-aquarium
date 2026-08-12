@@ -224,14 +224,10 @@ header {
    align-items: center;
 
    background-color: transparent;
-
-   opacity: 1;
-   transition: opacity 0.3s ease;
-
 }
 
 header.is-scrolled {
-   background-color: rgba(24, 59, 78, 0.4);
+   background-color: var(--color-navy-alpha-40);
    backdrop-filter: blur(10px);
 }
 
@@ -260,10 +256,10 @@ header.is-scrolled {
    min-width: 112px;
    padding: 11px 22px;
 
-   color: #fff;
+   color: var(--color-white);
    background-color: rgba(24, 59, 78, 0.72);
 
-   border: 1px solid rgba(255, 255, 255, 0.55);
+   border: 1px solid rgba(255, 255, 255, 0.1);
    border-radius: 999px;
 
    font-weight: 600;
@@ -317,69 +313,155 @@ header.is-scrolled {
    box-sizing: border-box;
 }
 
-/* 一旦コメントアウト、波デザイン確定後に差し替え予定
-#fv::after {
-   content: "";
+.fv__message {
    position: absolute;
-   left: 0;
-   right: 0;
-   bottom: 0;
-   height: 180px;
-   background: linear-gradient(to bottom, transparent, #f5f3ee);
-   pointer-events: none;
+   top: 50%;
+   left: 8%;
+   z-index: 2;
+
+   transform: translateY(-50%);
 }
-*/
+
 
 /* 左側のメインコピー */
 .fv__title {
-   position: absolute;
-   top: 250px;
-   left: 8.9%;
-
+   position: static;
    margin: 0;
-   color: var(--color-white);
-   font-size: 80px;
+
+   font-family: "Noto Serif JP", serif;
+   font-size: clamp(50px, 3.6vw, 64px);
+   line-height: 1.75;
+   letter-spacing: 0.06em;
+   transform: none;
    font-weight: 400;
-   line-height: 1.25;
-   letter-spacing: 0.25em;
+
+   color: var(--color-white);
+   text-shadow: 0 2px 18px var(--color-navy-alpha-40);
 }
 
 /* 左側のサブコピー */
 .fv__subtitle {
-   position: absolute;
-   top: 650px;
-   left: 9.4%;
+   position: static;
+   margin-top: 30px;
 
-   margin: 0;
+   font-size: 18px;
+   letter-spacing: 0.08em;
    color: var(--color-white);
-   font-size: 32px;
-   font-weight: 400;
-   letter-spacing: 0.12em;
-}
-
-/* 右側のイベントロゴ */
-.fv__logo {
-   position: absolute;
-   top: 450px;
-   right: 8.8%;
-   width: 334px;
-   margin: 0;
 }
 
 /* 右側の開催期間 */
-.fv__date {
+.fv__event {
    position: absolute;
-   top: 625px;
-   right: 5%;
-   width: 500px;
-   margin: 0;
+   top: 55%;
+   right: 6%;
+   bottom: auto;
+   z-index: 2;
+
+   width: min(32vw, 580px);
+   min-width: 480px;
+   transform: translateY(-50%);
+
+   color: var(--color-white);
 }
 
-.fv__logo img,
-.fv__date img {
-   display: block;
+.fv__event-label {
+   margin-bottom: 20px;
+
+   font-family: "DM Sans", sans-serif;
+   font-size: 12px;
+   font-weight: 500;
+   letter-spacing: 0.24em;
+
+   opacity: 0.72;
+}
+
+.fv__event-name {
+   display: flex;
+   align-items: center;
+   gap: 18px;
    width: 100%;
-   height: auto;
+
+   padding-bottom: 22px;
+   margin-bottom: 24px;
+
+   font-size: 27px;
+   font-weight: 400;
+   letter-spacing: 0.08em;
+
+   border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+   text-shadow: none;
+}
+
+
+.fv__event-time {
+   font-family: "DM Sans", sans-serif;
+   font-size: 31px;
+   font-weight: 400;
+   letter-spacing: 0.12em;
+   margin: 0;
+   line-height: 1.2;
+}
+
+.fv__event-date {
+   margin-top: 16px;
+
+   font-family: "DM Sans", sans-serif;
+   font-size: 13px;
+   letter-spacing: 0.18em;
+
+   opacity: 0.8;
+}
+
+/* fv 装飾*/
+
+#fv::before {
+   content: "";
+   position: absolute;
+   inset: 0;
+   z-index: 1;
+
+   background:
+      linear-gradient(90deg,
+         rgba(2, 22, 39, 0.42) 0%,
+         rgba(2, 22, 39, 0.08) 48%,
+         rgba(2, 22, 39, 0.3) 100%),
+      linear-gradient(to top,
+         rgba(2, 22, 39, 0.32) 0%,
+         transparent 42%);
+
+   pointer-events: none;
+}
+
+/* 月 */
+
+.fv__moon {
+   position: relative;
+   display: inline-block;
+   flex-shrink: 0;
+   overflow: hidden;
+
+   width: 25px;
+   height: 25px;
+
+   margin-left: 8px;
+
+   background-color: var(--color-white);
+   border-radius: 50%;
+
+   filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.35));
+}
+
+.fv__moon::after {
+   content: "";
+   position: absolute;
+   top: -4px;
+   left: 9px;
+
+   width: 24px;
+   height: 24px;
+
+   background-color: var(--color-navy);
+   border-radius: 50%;
 }
 
 /* ========================================
@@ -586,7 +668,7 @@ header.is-scrolled {
 .how-to-enjoy__image--02 img {
    width: 100%;
    height: 100%;
-
+   object-fit: cover
 }
 
 .how-to-enjoy__description--02 {
@@ -598,7 +680,7 @@ header.is-scrolled {
 /* how-to-enjoy　03 */
 
 .how-to-enjoy__item--03 {
-   padding: 100px 0;
+   padding: 40px 0;
 }
 
 .how-to-enjoy__box {
@@ -621,6 +703,7 @@ header.is-scrolled {
 .how-to-enjoy__image--03 img {
    width: 100%;
    height: 100%;
+   object-fit: cover
 }
 
 .how-to-enjoy__price {
@@ -671,7 +754,7 @@ header.is-scrolled {
    display: flex;
    gap: 150px;
    margin-top: 150px;
-   width: 180px;
+   width: 150px;
 }
 
 .model-course__item {
@@ -791,7 +874,7 @@ header.is-scrolled {
 
 
 .news__info-column .news__heading {
-   border-bottom: 1px solid rgba(24, 59, 78, 0.2);
+   border-bottom: 1px solid var(--color-navy-alpha-20);
    padding-bottom: 50px;
 }
 
@@ -799,7 +882,7 @@ header.is-scrolled {
    display: flex;
    align-items: center;
    gap: 50px;
-   border-bottom: 1px solid rgba(24, 59, 78, 0.1);
+   border-bottom: 1px solid var(--color-navy-alpha-10);
    padding: 20px 0;
 }
 
@@ -837,7 +920,7 @@ header.is-scrolled {
 }
 
 .news-access-bg {
-   background: linear-gradient(to bottom, #F3F0E8 0%, #B6C7D2 100%);
+   background: linear-gradient(to bottom, var(--color-cream) 0%, #B6C7D2 100%);
 }
 
 
