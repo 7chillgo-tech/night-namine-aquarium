@@ -3,11 +3,6 @@
 /* ========================================
    Base
 ======================================== */
-html,
-body {
-   overflow-x: hidden;
-   /* レスポンシブ対応まで暫定処置 */
-}
 
 body {
    font-family: 'Zen Kaku Gothic New', sans-serif;
@@ -362,25 +357,57 @@ header.is-scrolled {
 #how-to-enjoy {
    position: relative;
    padding: 120px 0 80px;
-   background-color: #F3F0E8;
-   background-size: cover;
-}
 
-.how-to-enjoy__bg--01 {
-   background: radial-gradient(circle 500px at 40% 50%,
+   background:
+      radial-gradient(circle 750px at 42% 22%,
          #52A1B1 0%,
          #63A9B6 15%,
          #9CC5CA 44%,
          #DFE6E1 78%,
-         #F3F0E8 100%);
+         transparent 100%),
+      radial-gradient(circle 750px at 55% 52%,
+         #52A1B1 0%,
+         #63A9B6 15%,
+         #9CC5CA 44%,
+         #DFE6E1 78%,
+         transparent 100%),
+      radial-gradient(circle 750px at 45% 84%,
+         #52A1B1 0%,
+         #63A9B6 15%,
+         #9CC5CA 44%,
+         #DFE6E1 78%,
+         transparent 100%),
+      #F3F0E8;
+}
+
+/* INTRO → HOW TOのつなぎ */
+#how-to-enjoy::before {
+   content: "";
+   position: absolute;
+   top: -220px;
+   left: 50%;
+   z-index: -1;
+
+   width: 100vw;
+   height: 500px;
+   transform: translateX(-50%);
+
+   background: radial-gradient(ellipse 65% 100% at 48% 55%,
+         rgba(82, 161, 177, 0.7) 0%,
+         rgba(156, 197, 202, 0.45) 42%,
+         rgba(223, 230, 225, 0.22) 68%,
+         transparent 100%);
+
+   pointer-events: none;
 }
 
 .how-to-enjoy__item {
    position: relative;
-   min-height: 100vh;
    display: flex;
    align-items: center;
    justify-content: center;
+   padding: 100px 0;
+   min-height: 780px;
 }
 
 .how-to-enjoy__content {
@@ -397,6 +424,8 @@ header.is-scrolled {
    color: #183B4E;
    margin-bottom: 40px;
 }
+
+/* how-to-enjoy　01 */
 
 .how-to-enjoy__image--01 {
    position: absolute;
@@ -429,14 +458,8 @@ header.is-scrolled {
    width: 503px;
 }
 
-.how-to-enjoy__item--02 {
-   background: radial-gradient(circle 500px at 40% 50%,
-         #52A1B1 0%,
-         #63A9B6 15%,
-         #9CC5CA 44%,
-         #DFE6E1 78%,
-         #F3F0E8 100%);
-}
+/* how-to-enjoy　02 */
+
 
 .how-to-enjoy__image--02 {
    position: absolute;
@@ -455,15 +478,13 @@ header.is-scrolled {
 .how-to-enjoy__description--02 {
    top: 650px;
    left: 700px;
+   width: 500px;
 }
 
+/* how-to-enjoy　03 */
+
 .how-to-enjoy__item--03 {
-   background: radial-gradient(circle 500px at 40% 50%,
-         #52A1B1 0%,
-         #63A9B6 15%,
-         #9CC5CA 44%,
-         #DFE6E1 78%,
-         #F3F0E8 100%);
+   padding: 100px 0;
 }
 
 .how-to-enjoy__box {
@@ -513,7 +534,9 @@ header.is-scrolled {
    background-position: center top;
    background-size: cover;
    padding-top: 80px;
+
 }
+
 
 #model-course .section-title {
    font-weight: 500;
@@ -572,19 +595,12 @@ header.is-scrolled {
    padding-bottom: 180px;
 }
 
-
 /* ========================================
    NEWS
 ======================================== */
 
 #news {
    position: relative;
-   background: radial-gradient(circle 500px at 40% 50%,
-         #52A1B1 0%,
-         #63A9B6 15%,
-         #9CC5CA 44%,
-         #DFE6E1 78%,
-         #F3F0E8 100%);
    padding-top: 150px;
 }
 
@@ -689,6 +705,10 @@ header.is-scrolled {
 #news .star--info {
    top: 185px;
    left: 1025px;
+}
+
+.news-access-bg {
+   background: linear-gradient(to bottom, #F3F0E8 0%, #B6C7D2 100%);
 }
 
 
