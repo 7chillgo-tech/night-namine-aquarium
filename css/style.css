@@ -96,7 +96,6 @@ ol {
 }
 
 .section-subtitle {
-   position: absolute;
    font-size: 24px;
    font-weight: 500;
    line-height: 1.5;
@@ -123,7 +122,10 @@ ol {
 .section-title,
 .number-badge,
 .model-course__time,
-.news__title .footer__sne-title {
+.news__title,
+.news__event-date,
+.news__date,
+.footer__sns-title {
    font-family: 'DM Sans', sans-serif;
 }
 
@@ -583,6 +585,110 @@ header.is-scrolled {
          #9CC5CA 44%,
          #DFE6E1 78%,
          #F3F0E8 100%);
+   padding-top: 150px;
+}
+
+#news .section-subtitle {
+   font-size: 16px;
+}
+
+.news__content {
+   display: flex;
+   align-items: flex-start;
+   justify-content: center;
+   gap: 150px;
+   padding-bottom: 150px;
+
+}
+
+.news__heading {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   gap: 20px;
+}
+
+
+/* news左側 */
+
+.news__event {
+   width: 400px;
+   text-align: center;
+   padding-top: 50px;
+}
+
+.news__event-image {
+   width: 100%;
+   max-width: 400px;
+}
+
+.news__event-date {
+   font-size: 20px;
+   font-weight: 500;
+   padding-top: 20px;
+}
+
+.news__event-new {
+   color: #C3A364;
+   font-weight: 600;
+   padding-right: 20px;
+}
+
+.news__event-description {
+   font-size: 20px;
+}
+
+/* news右側 */
+
+.news__info {
+   width: 450px;
+}
+
+
+.news__info-column .news__heading {
+   border-bottom: 1px solid rgba(24, 59, 78, 0.2);
+   padding-bottom: 50px;
+}
+
+.news__item {
+   display: flex;
+   align-items: center;
+   gap: 50px;
+   border-bottom: 1px solid rgba(24, 59, 78, 0.1);
+   padding: 20px 0;
+}
+
+.news__icon {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   width: 50px;
+   height: 50px;
+   background-color: #B9CDD1;
+   border-radius: 50%;
+}
+
+.news__icon img {
+   width: 24px;
+   height: 24px;
+}
+
+/* news装飾 */
+
+#news .star {
+   position: absolute;
+   width: 15px;
+   z-index: 2;
+}
+
+#news .star--event {
+   top: 184px;
+   left: 455px;
+}
+
+#news .star--info {
+   top: 185px;
+   left: 1025px;
 }
 
 
