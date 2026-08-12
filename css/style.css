@@ -3,6 +3,11 @@
 /* ========================================
    Base
 ======================================== */
+html,
+body {
+   overflow-x: hidden;
+   /* レスポンシブ対応まで暫定処置 */
+}
 
 body {
    font-family: 'Zen Kaku Gothic New', sans-serif;
@@ -118,7 +123,7 @@ ol {
 .section-title,
 .number-badge,
 .model-course__time,
-.news__title {
+.news__title .footer__sne-title {
    font-family: 'DM Sans', sans-serif;
 }
 
@@ -615,10 +620,6 @@ header.is-scrolled {
    font-weight: 300;
 }
 
-.ticket__title {
-   padding-bottom: 30px;
-}
-
 .ticket__content {
    display: flex;
    flex-direction: column;
@@ -628,7 +629,9 @@ header.is-scrolled {
    min-height: 320px;
 }
 
-
+.ticket__title {
+   padding-bottom: 30px;
+}
 
 /* ========================================
    Footer
@@ -636,9 +639,47 @@ header.is-scrolled {
 
 footer {
    position: relative;
+   background-color: #B9CDD1;
+}
+
+.footer__content {
+   display: flex;
+   align-items: flex-start;
+   justify-content: space-between;
+   min-height: 320px;
+   padding-top: 100px;
+}
+
+.footer__navigation ul {
+   display: grid;
+   grid-template-rows: repeat(3, auto);
+   grid-auto-flow: column;
+   gap: 10px 30px;
+}
+
+.footer__sns-title {
+   color: #5B7889;
+   font-weight: 600;
+   font-size: 20px;
+}
+
+.footer__sns-nav ul {
+   display: flex;
+   gap: 40px;
 }
 
 .footer__sns-img {
+   padding-top: 20px;
    width: 48px;
    height: 48px;
+}
+
+.footer__link {
+   display: block;
+   margin-top: 20px;
+}
+
+.footer__copyright {
+   text-align: center;
+   padding: 100px;
 }
