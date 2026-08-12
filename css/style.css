@@ -567,7 +567,7 @@ header.is-scrolled {
    font-size: 18px;
    text-align: center;
    width: 200px;
-   margin-bottom: 180px;
+   padding-bottom: 180px;
 }
 
 
@@ -592,6 +592,46 @@ header.is-scrolled {
 
 #access {
    position: relative;
+   padding-top: 150px;
+}
+
+#access iframe {
+   width: 1200px;
+   height: 450px;
+   border-radius: 50px;
+}
+
+.access__cards {
+   display: grid;
+   grid-template-columns: repeat(2, 1fr);
+   gap: 40px;
+   padding: 50px 0 100px 0;
+}
+
+.access__card {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+}
+
+.access__icon {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   width: 50px;
+   height: 50px;
+   background-color: #B9CDD1;
+   border-radius: 50%;
+   margin-bottom: 20px;
+}
+
+.access__icon img {
+   width: 24px;
+   height: 24px;
+}
+
+.access__description {
+   text-align: center;
 }
 
 /* ========================================
