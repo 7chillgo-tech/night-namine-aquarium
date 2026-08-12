@@ -25,7 +25,8 @@ a {
    text-decoration: none;
 }
 
-ul {
+ul,
+ol {
    list-style: none;
 }
 
@@ -218,7 +219,7 @@ header.is-scrolled {
 /* 左側のメインコピー */
 .fv__title {
    position: absolute;
-   top: 125px;
+   top: 250px;
    left: 8.9%;
 
    margin: 0;
@@ -232,7 +233,7 @@ header.is-scrolled {
 /* 左側のサブコピー */
 .fv__subtitle {
    position: absolute;
-   top: 470px;
+   top: 650px;
    left: 9.4%;
 
    margin: 0;
@@ -245,7 +246,7 @@ header.is-scrolled {
 /* 右側のイベントロゴ */
 .fv__logo {
    position: absolute;
-   top: 304px;
+   top: 450px;
    right: 8.8%;
    width: 334px;
    margin: 0;
@@ -254,8 +255,8 @@ header.is-scrolled {
 /* 右側の開催期間 */
 .fv__date {
    position: absolute;
-   top: 446px;
-   right: 3%;
+   top: 625px;
+   right: 5%;
    width: 500px;
    margin: 0;
 }
@@ -358,7 +359,14 @@ header.is-scrolled {
    background-size: cover;
 }
 
-.how-to-enjoy__bg--01 {}
+.how-to-enjoy__bg--01 {
+   background: radial-gradient(circle 500px at 40% 50%,
+         #52A1B1 0%,
+         #63A9B6 15%,
+         #9CC5CA 44%,
+         #DFE6E1 78%,
+         #F3F0E8 100%);
+}
 
 .how-to-enjoy__item {
    position: relative;
@@ -389,7 +397,7 @@ header.is-scrolled {
    height: 350px;
    border-radius: 50px;
    overflow: hidden;
-   top: 77px;
+   top: 120px;
    left: 394px;
 }
 
@@ -409,23 +417,46 @@ header.is-scrolled {
 }
 
 .how-to-enjoy__description--01 {
-   top: 480px;
+   top: 540px;
    left: 166px;
    width: 503px;
+}
+
+.how-to-enjoy__item--02 {
+   background: radial-gradient(circle 500px at 40% 50%,
+         #52A1B1 0%,
+         #63A9B6 15%,
+         #9CC5CA 44%,
+         #DFE6E1 78%,
+         #F3F0E8 100%);
 }
 
 .how-to-enjoy__image--02 {
    position: absolute;
    width: 800px;
    height: 400px;
-   top: 208px;
-   left: 266px;
+   top: 160px;
+   left: 280px;
 }
 
 .how-to-enjoy__image--02 img {
    width: 100%;
    height: 100%;
 
+}
+
+.how-to-enjoy__description--02 {
+   top: 650px;
+   left: 700px;
+}
+
+.how-to-enjoy__item--03 {
+   background: radial-gradient(circle 500px at 40% 50%,
+         #52A1B1 0%,
+         #63A9B6 15%,
+         #9CC5CA 44%,
+         #DFE6E1 78%,
+         #F3F0E8 100%);
 }
 
 .how-to-enjoy__box {
@@ -469,37 +500,145 @@ header.is-scrolled {
 
 #model-course {
    position: relative;
+   color: #fff;
    background-image: url(../images/modelcourse.png);
    background-repeat: no-repeat;
    background-position: center top;
    background-size: cover;
-   color: white;
+   padding-top: 80px;
 }
 
-#model-courese .section-title {
-   font-weight: 600;
+#model-course .section-title {
+   font-weight: 500;
 }
 
-.model-course__title {}
+#model-course .button {
+   color: #fff;
+   border-color: #fff;
+}
+
+.model-course__header {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+}
+
+.model-course__title {
+   font-weight: 400;
+   padding-left: 200px;
+}
+
+.model-course__list {
+   display: flex;
+   gap: 150px;
+   margin-top: 150px;
+   width: 180px;
+}
+
+.model-course__item {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   gap: 40px;
+   min-height: 320px;
+}
+
+.model-course__icon {
+   width: 150px;
+   height: 150px;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+
+.model-course__time {
+   font-size: 25px;
+   display: flex;
+   gap: 15px;
+
+}
+
+.model-course__description {
+   font-size: 18px;
+   text-align: center;
+   width: 200px;
+   margin-bottom: 180px;
+}
+
 
 /* ========================================
    NEWS
 ======================================== */
 
+#news {
+   position: relative;
+   background: radial-gradient(circle 500px at 40% 50%,
+         #52A1B1 0%,
+         #63A9B6 15%,
+         #9CC5CA 44%,
+         #DFE6E1 78%,
+         #F3F0E8 100%);
+}
+
+
 /* ========================================
    ACCESS
 ======================================== */
+
+#access {
+   position: relative;
+}
 
 /* ========================================
    TICKET
 ======================================== */
 
 #ticket {
+   position: relative;
+   color: #fff;
    background-image: url(../images/ticket.png);
    background-repeat: no-repeat;
-   background-position: center top;
+   background-position: center 50%;
+   background-size: cover;
+   min-height: 500px;
+   display: flex;
+   align-items: center;
 }
+
+#ticket .button {
+   color: #fff;
+   border-color: #fff;
+}
+
+.ticket__content,
+.ticket__title {
+   font-weight: 300;
+}
+
+.ticket__title {
+   padding-bottom: 30px;
+}
+
+.ticket__content {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   gap: 40px;
+   min-height: 320px;
+}
+
+
 
 /* ========================================
    Footer
 ======================================== */
+
+footer {
+   position: relative;
+}
+
+.footer__sns-img {
+   width: 48px;
+   height: 48px;
+}
