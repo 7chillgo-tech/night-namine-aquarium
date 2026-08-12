@@ -1,6 +1,37 @@
 @charset "UTF-8";
 
 /* ========================================
+   変数定義
+======================================== */
+
+
+:root {
+   /* メインカラー */
+   --color-navy: #183B4E;
+   --color-cream: #F3F0E8;
+
+   /* アクセント(グラデーション) */
+   --color-blue-100: #52A1B1;
+   --color-blue-200: #63A9B6;
+   --color-blue-300: #9CC5CA;
+   --color-blue-400: #DFE6E1;
+
+   /* テキスト・アクセント */
+   --color-text-body: #252829;
+   --color-gold: #C3A364;
+   --color-icon-bg: #B9CDD1;
+   --color-sns-title: #5B7889;
+   --color-white: #fff;
+   --color-button-hover: #397b8b;
+
+   /* 半透明 */
+   --color-navy-alpha-40: rgba(24, 59, 78, 0.4);
+   --color-navy-alpha-20: rgba(24, 59, 78, 0.2);
+   --color-navy-alpha-10: rgba(24, 59, 78, 0.1);
+}
+
+
+/* ========================================
    Base
 ======================================== */
 
@@ -9,8 +40,8 @@ body {
    font-size: 16px;
    font-weight: 400;
    line-height: 1.7;
-   color: #183B4E;
-   background-color: #F3F0E8;
+   color: var(--color-navy);
+   background-color: var(--color-cream);
 
 }
 
@@ -62,20 +93,59 @@ ol {
 /* ボタン */
 
 .button {
-   display: inline-block;
-   padding: 10px 20px;
-   color: #183B4E;
-   font-size: 16px;
-   font-weight: 400;
-   text-align: center;
-   border-radius: 12px;
-   border: 1px solid #183B4E;
-   transition: all 0.3s ease;
+   position: relative;
+   display: inline-flex;
+   align-items: center;
+   gap: 28px;
+
+   padding: 10px 2px 12px;
+   color: var(--color-navy);
+
+   font-family: "Zen Kaku Gothic New", sans-serif;
+   font-size: 15px;
+   font-weight: 500;
+   letter-spacing: 0.08em;
+
+   border: none;
+   border-bottom: 1px solid rgba(24, 59, 78, 0.55);
+   border-radius: 0;
+
+   transition:
+      gap 0.35s ease,
+      color 0.35s ease,
+      border-color 0.35s ease;
+}
+
+.button::after {
+   content: "↗";
+   display: grid;
+   place-items: center;
+
+   width: 30px;
+   height: 30px;
+
+   color: var(--color-cream);
+   background-color: var(--color-navy);
+   border-radius: 50%;
+
+   font-family: "DM Sans", sans-serif;
+   font-size: 14px;
+
+   transition:
+      transform 0.35s ease,
+      background-color 0.35s ease;
 }
 
 .button:hover {
-   color: #fff;
-   background-color: #183B4E;
+   gap: 36px;
+   color: var(--color-button-hover);
+   background: none;
+   border-color: var(--color-button-hover);
+}
+
+.button:hover::after {
+   background-color: var(--color-button-hover);
+   transform: translate(3px, -3px);
 }
 
 /* セクションタイトル */
@@ -106,8 +176,8 @@ ol {
    line-height: 56px;
    text-align: center;
    border-radius: 50%;
-   background-color: #183B4E;
-   color: #fff;
+   background-color: var(--color-navy);
+   color: var(--color-white);
    font-size: 16px;
    font-weight: 700;
    margin-right: 10px;
@@ -166,7 +236,7 @@ header.is-scrolled {
 }
 
 .header__nav a {
-   color: #fff;
+   color: var(--color-white);
    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
 }
 
@@ -176,10 +246,52 @@ header.is-scrolled {
    align-items: center;
    gap: 40px;
    padding: 20px 0;
-   color: #fff;
+   color: var(--color-white);
    list-style: none;
 }
 
+/* ボタン　*/
+
+.header__ticket {
+   display: inline-flex;
+   align-items: center;
+   justify-content: center;
+
+   min-width: 112px;
+   padding: 11px 22px;
+
+   color: #fff;
+   background-color: rgba(24, 59, 78, 0.72);
+
+   border: 1px solid rgba(255, 255, 255, 0.55);
+   border-radius: 999px;
+
+   font-weight: 600;
+   letter-spacing: 0.1em;
+
+   box-shadow: 0 4px 14px rgba(7, 48, 91, 0.12);
+   backdrop-filter: blur(8px);
+
+   transition:
+      color 0.3s ease,
+      background-color 0.3s ease,
+      border-color 0.3s ease,
+      transform 0.3s ease,
+      box-shadow 0.3s ease;
+}
+
+.header__ticket:hover {
+   color: var(--color-navy);
+   background-color: var(--color-cream);
+   border-color: var(--color-cream);
+
+   transform: translateY(-2px);
+   box-shadow: 0 6px 18px rgba(7, 48, 91, 0.2);
+}
+
+.header__ticket::after {
+   display: none;
+}
 
 
 /* ========================================
@@ -225,7 +337,7 @@ header.is-scrolled {
    left: 8.9%;
 
    margin: 0;
-   color: #fff;
+   color: var(--color-white);
    font-size: 80px;
    font-weight: 400;
    line-height: 1.25;
@@ -239,7 +351,7 @@ header.is-scrolled {
    left: 9.4%;
 
    margin: 0;
-   color: #fff;
+   color: var(--color-white);
    font-size: 32px;
    font-weight: 400;
    letter-spacing: 0.12em;
@@ -278,11 +390,11 @@ header.is-scrolled {
    position: relative;
    padding: 120px 0 80px;
    background: radial-gradient(circle 500px at 40% 50%,
-         #52A1B1 0%,
-         #63A9B6 15%,
-         #9CC5CA 44%,
-         #DFE6E1 78%,
-         #F3F0E8 100%);
+         var(--color-blue-100) 0%,
+         var(--color-blue-200) 15%,
+         var(--color-blue-300) 44%,
+         var(--color-blue-400) 78%,
+         var(--color-cream) 100%);
 
 }
 
@@ -315,7 +427,7 @@ header.is-scrolled {
    font-weight: 500;
    line-height: 1.5;
    letter-spacing: 0.05em;
-   color: #183B4E;
+   color: var(--color-navy);
    margin-bottom: 40px;
 }
 
@@ -330,7 +442,7 @@ header.is-scrolled {
    font-size: 16px;
    font-weight: 500;
    line-height: 1.7;
-   color: #252829;
+   color: var(--color-text-body);
    margin-bottom: 40px;
 }
 
@@ -360,24 +472,24 @@ header.is-scrolled {
 
    background:
       radial-gradient(circle 750px at 42% 22%,
-         #52A1B1 0%,
-         #63A9B6 15%,
-         #9CC5CA 44%,
-         #DFE6E1 78%,
+         var(--color-blue-100) 0%,
+         var(--color-blue-200) 15%,
+         var(--color-blue-300) 44%,
+         var(--color-blue-400) 78%,
          transparent 100%),
       radial-gradient(circle 750px at 55% 52%,
-         #52A1B1 0%,
-         #63A9B6 15%,
-         #9CC5CA 44%,
-         #DFE6E1 78%,
+         var(--color-blue-100) 0%,
+         var(--color-blue-200) 15%,
+         var(--color-blue-300) 44%,
+         var(--color-blue-400) 78%,
          transparent 100%),
       radial-gradient(circle 750px at 45% 84%,
-         #52A1B1 0%,
-         #63A9B6 15%,
-         #9CC5CA 44%,
-         #DFE6E1 78%,
+         var(--color-blue-100) 0%,
+         var(--color-blue-200) 15%,
+         var(--color-blue-300) 44%,
+         var(--color-blue-400) 78%,
          transparent 100%),
-      #F3F0E8;
+      var(--color-cream);
 }
 
 /* INTRO → HOW TOのつなぎ */
@@ -406,14 +518,16 @@ header.is-scrolled {
    display: flex;
    align-items: center;
    justify-content: center;
-   padding: 100px 0;
-   min-height: 780px;
+
+   min-height: 820px;
+   padding: 40px 0;
+   box-sizing: border-box;
 }
 
 .how-to-enjoy__content {
    position: relative;
    width: 1200px;
-   height: 700px;
+   height: 740px;
 }
 
 .how-to-enjoy__title {
@@ -421,7 +535,7 @@ header.is-scrolled {
    font-weight: 500;
    line-height: 1.5;
    letter-spacing: 0.05em;
-   color: #183B4E;
+   color: var(--color-navy);
    margin-bottom: 40px;
 }
 
@@ -449,7 +563,7 @@ header.is-scrolled {
    font-size: 20px;
    font-weight: 400;
    line-height: 1.8;
-   color: #252829;
+   color: var(--color-text-body);
 }
 
 .how-to-enjoy__description--01 {
@@ -528,7 +642,7 @@ header.is-scrolled {
 
 #model-course {
    position: relative;
-   color: #fff;
+   color: var(--color-white);
    background-image: url(../images/modelcourse.png);
    background-repeat: no-repeat;
    background-position: center top;
@@ -540,11 +654,6 @@ header.is-scrolled {
 
 #model-course .section-title {
    font-weight: 500;
-}
-
-#model-course .button {
-   color: #fff;
-   border-color: #fff;
 }
 
 .model-course__header {
@@ -593,6 +702,26 @@ header.is-scrolled {
    text-align: center;
    width: 200px;
    padding-bottom: 180px;
+}
+
+/*　ボタン */
+#model-course .button {
+   color: var(--color-white);
+   border-color: rgba(255, 255, 255, 0.6);
+}
+
+#model-course .button::after {
+   color: var(--color-navy);
+   background-color: var(--color-white);
+}
+
+#model-course .button:hover {
+   color: var(--color-white);
+   border-color: var(--color-white);
+}
+
+#model-course .button:hover::after {
+   background-color: #c6e4e7;
 }
 
 /* ========================================
@@ -645,7 +774,7 @@ header.is-scrolled {
 }
 
 .news__event-new {
-   color: #C3A364;
+   color: var(--color-gold);
    font-weight: 600;
    padding-right: 20px;
 }
@@ -680,7 +809,7 @@ header.is-scrolled {
    align-items: center;
    width: 50px;
    height: 50px;
-   background-color: #B9CDD1;
+   background-color: var(--color-icon-bg);
    border-radius: 50%;
 }
 
@@ -746,7 +875,7 @@ header.is-scrolled {
    align-items: center;
    width: 50px;
    height: 50px;
-   background-color: #B9CDD1;
+   background-color: var(--color-icon-bg);
    border-radius: 50%;
    margin-bottom: 20px;
 }
@@ -766,7 +895,7 @@ header.is-scrolled {
 
 #ticket {
    position: relative;
-   color: #fff;
+   color: var(--color-white);
    background-image: url(../images/ticket.png);
    background-repeat: no-repeat;
    background-position: center 50%;
@@ -774,11 +903,6 @@ header.is-scrolled {
    min-height: 500px;
    display: flex;
    align-items: center;
-}
-
-#ticket .button {
-   color: #fff;
-   border-color: #fff;
 }
 
 .ticket__content,
@@ -799,13 +923,46 @@ header.is-scrolled {
    padding-bottom: 30px;
 }
 
+/*　ボタン　*/
+
+#ticket .button {
+   gap: 32px;
+   min-width: 250px;
+   justify-content: space-between;
+
+   padding: 14px 16px 14px 24px;
+   color: var(--color-white);
+
+   border: 1px solid rgba(255, 255, 255, 0.8);
+   border-radius: 999px;
+
+   backdrop-filter: blur(6px);
+}
+
+#ticket .button::after {
+   color: var(--color-white);
+   background-color: var(--color-navy);
+}
+
+#ticket .button:hover {
+   gap: 32px;
+   color: var(--color-navy);
+   background-color: var(--color-white);
+   border-color: var(--color-white);
+   transform: translateY(-2px);
+}
+
+#ticket .button:hover::after {
+   background-color: var(--color-button-hover);
+}
+
 /* ========================================
    Footer
 ======================================== */
 
 footer {
    position: relative;
-   background-color: #B9CDD1;
+   background-color: var(--color-icon-bg);
 }
 
 .footer__content {
@@ -824,7 +981,7 @@ footer {
 }
 
 .footer__sns-title {
-   color: #5B7889;
+   color: var(--color-sns-title);
    font-weight: 600;
    font-size: 20px;
 }
