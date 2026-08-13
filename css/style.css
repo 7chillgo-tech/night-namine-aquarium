@@ -194,6 +194,11 @@ ol {
    font-family: 'DM Sans', sans-serif;
 }
 
+/* 通常PCではハンバーガーを隠す */
+.header__menu-button {
+   display: none;
+}
+
 
 /* ========================================
    星座
