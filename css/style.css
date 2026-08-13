@@ -1096,66 +1096,68 @@ footer {
 
 @media (max-width: 1200px) {
 
-header {
-  padding: 0 24px;
+   header {
+      padding: 0 20px;
+   }
+
+   .header__logo {
+      flex-shrink: 0;
+   }
+
+   /* TICKET以外のナビを隠す */
+   .header__nav li:not(.header__item) {
+      display: none;
+   }
+
+   /* TICKETを右側に配置 */
+   .header__nav {
+      display: block;
+      position: absolute;
+      right: 84px;
+      margin-left: 0;
+   }
+
+   .header__nav ul {
+      gap: 0;
+      padding: 0;
+   }
+
+   .header__ticket {
+      min-width: 96px;
+      padding: 10px 18px;
+   }
+
+   /* ハンバーガーを一番右に配置 */
+   .header__menu-button {
+      display: flex;
+      position: absolute;
+      right: 20px;
+
+      flex-direction: column;
+      justify-content: center;
+      gap: 6px;
+
+      width: 48px;
+      height: 48px;
+      margin-left: 0;
+      padding: 12px;
+
+      background: rgba(24, 59, 78, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+   }
+
+   .header__menu-button span {
+      display: block;
+      width: 100%;
+      height: 1px;
+      background-color: var(--color-white);
+   }
 }
 
-.header__nav ul {
-  gap: 24px;
-}
-
-.header__ticket {
-  min-width: 96px;
-  padding: 10px 18px;
-}
-
-header {
-   padding: 0 20px;
-}
-
-.header__logo {
-   flex-shrink: 0;
-}
-
-/* 通常のメニュー項目だけ隠す */
-.header__nav li:not(.header__item) {
-   display: none;
-}
-
-/* TICKETは右側に表示 */
-.header__nav {
-   display: block;
-   position: absolute;
-   right: 84px;
-   margin-left: 0;
-}
-
-/* ハンバーガーを一番右に表示 */
-.header__menu-button {
-   display: flex;
-   position: absolute;
-   right: 20px;
-
-   flex-direction: column;
-   justify-content: center;
-   gap: 6px;
-
-   width: 48px;
-   height: 48px;
-   margin-left: 0;
-   padding: 12px;
-
-   background: rgba(24, 59, 78, 0.72);
-   border: 1px solid rgba(255, 255, 255, 0.3);
-   border-radius: 50%;
-}
-
-.header__menu-button span {
-   display: block;
-   width: 100%;
-   height: 1px;
-   background-color: var(--color-white);
-}
+/* ========================================
+   FV：小さいPC
+======================================== */
 
 .fv__message {
   left: 5%;
@@ -1175,4 +1177,224 @@ header {
 .fv__event-name {
   gap: 12px;
 }
+
+/* ========================================
+   INTRO：小さいPC
+======================================== */
+
+#intro .container {
+   gap: 40px;
+}
+
+#intro .section-title {
+   left: 40px;
+}
+
+.intro__content {
+   margin-left: 40px;
+}
+
+.intro__title {
+   font-size: 36px;
+}
+
+.intro__image {
+   max-width: 420px;
+}
+
+/* ========================================
+   HOW TO ENJOY：小さいPC
+======================================== */
+
+.how-to-enjoy__content {
+   width: 100%;
+   height: 700px;
+}
+
+/* 01 */
+.how-to-enjoy__image--01 {
+   width: 70%;
+   height: 350px;
+   left: 28%;
+}
+
+.how-to-enjoy__description--01 {
+   left: 15%;
+   width: 55%;
+}
+
+/* 02 */
+.how-to-enjoy__image--02 {
+   width: 75%;
+   height: 400px;
+   left: 20%;
+}
+
+.how-to-enjoy__description--02 {
+   top: 600px;
+   left: 48%;
+   width: 48%;
+}
+
+/* 03 */
+.how-to-enjoy__gallery--03 {
+   left: 0;
+   width: 100%;
+   gap: 20px;
+}
+
+.how-to-enjoy__box {
+   width: calc((100% - 40px) / 3);
+}
+
+.how-to-enjoy__image--03 {
+   width: 100%;
+   height: auto;
+}
+
+.how-to-enjoy__image--03 img {
+   width: 100%;
+   height: auto;
+   object-fit: contain;
+}
+
+.how-to-enjoy__description--03 {
+   left: 38%;
+   width: 55%;
+}
+
+/* ========================================
+   MODEL COURSE：小さいPC
+======================================== */
+
+.model-course__header {
+   display: grid;
+   grid-template-columns: auto 1fr auto;
+   align-items: center;
+   gap: 24px;
+}
+
+#model-course .section-title {
+   position: static;
+   font-size: 20px;
+}
+
+.model-course__title {
+   padding-left: 0;
+   font-size: 18px;
+   text-align: center;
+}
+
+#model-course .button {
+   gap: 18px;
+   font-size: 14px;
+}
+
+/* 4項目を画面幅の中で4等分 */
+.model-course__list {
+   display: grid;
+   grid-template-columns: repeat(4, 1fr);
+   gap: 24px;
+
+   width: 100%;
+   margin-top: 120px;
+}
+
+.model-course__item {
+   gap: 30px;
+   min-width: 0;
+}
+
+.model-course__icon {
+   width: 110px;
+   height: 110px;
+}
+
+.model-course__time {
+   font-size: 22px;
+}
+
+.model-course__description {
+   width: 100%;
+   font-size: 16px;
+   padding-bottom: 140px;
+}
+
+/* ========================================
+   NEWS：小さいPC
+======================================== */
+
+.news__content {
+   justify-content: center;
+   gap: 60px;
+   padding-inline: 30px;
+}
+
+#news .star {
+   position: static;
+   width: 15px;
+}
+
+.news__heading {
+   gap: 8px;
+}
+
+.news__event {
+   width: 380px;
+   padding-top: 24px;
+}
+
+.news__info-column .news__heading {
+   padding-bottom: 24px;
+}
+
+.news__event-date,
+.news__event-description {
+   width: fit-content;
+   margin-inline: auto;
+   text-align: center;
+}
+
+.news__info-column {
+   transform: translateX(32px);
+}
+
+.news__info {
+   width: 350px;
+}
+
+.news__event-description {
+   transform: translateX(8px);
+}
+
+.news__item {
+   display: grid;
+   grid-template-columns: 50px 1fr ;
+   grid-template-rows: auto auto;
+   column-gap: 20px;
+   row-gap: 2px;
+   align-items: center;
+   padding: 18px 0;
+}
+
+/* アイコンは2段分の中央 */
+.news__icon {
+   grid-column: 1;
+   grid-row: 1 / 3;
+}
+
+/* 日付は右側の上段 */
+.news__date {
+   grid-column: 2;
+   grid-row: 1;
+   font-size: 13px;
+}
+
+/* お知らせ内容は右側の下段 */
+.news__description {
+   grid-column: 2;
+   grid-row: 2;
+   font-size: 16px;
+}
+
 }
