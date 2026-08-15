@@ -3,14 +3,42 @@
 
 // スクロール時にヘッダーの背景色を変更する
 const header = document.querySelector('header');
+const headerLogo = document.querySelector('.header__logo img');
+const sections = [...document.querySelectorAll('main section')];
 
-window.addEventListener('scroll', () => {
-    if (window.scrollY > 0) {
-        header.classList.add('is-scrolled');
-    } else {
-        header.classList.remove('is-scrolled');
-    }
-});
+function updateHeader() {
+   const isScrolled = window.scrollY > 0;
+   const checkPoint = header.offsetHeight / 2;
+
+   const currentSection = sections.find(section => {
+      const rect = section.getBoundingClientRect();
+
+      return rect.top <= checkPoint &&
+             rect.bottom > checkPoint;
+   });
+
+   const darkSections = [
+      'fv',
+      'model-course',
+      'ticket'
+   ];
+
+   const isDark = currentSection
+      ? darkSections.includes(currentSection.id)
+      : false;
+
+   header.classList.toggle('is-scrolled', isScrolled);
+   header.classList.toggle('is-dark', isDark);
+
+   headerLogo.src = isDark
+      ? 'logo/logo-main-fff.svg'
+      : 'logo/logo-main.svg';
+}
+
+window.addEventListener('scroll', updateHeader);
+window.addEventListener('resize', updateHeader);
+window.addEventListener('load', updateHeader);
+
 
 // 星座の線を描画する関数
 function drawConstellation() {
@@ -28,7 +56,10 @@ function drawConstellation() {
         };
     });
 
-    svg.setAttribute('width', window.innerWidth);
+   svg.setAttribute(
+   'width',
+   document.documentElement.clientWidth
+);
     svg.setAttribute('height', document.body.scrollHeight);
 
     const d = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
