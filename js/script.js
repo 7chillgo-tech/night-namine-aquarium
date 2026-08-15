@@ -101,3 +101,25 @@ if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(drawConstellation);
 }
 
+// HOW TO 02：うつぼが岩穴から現れる
+const eelImage = document.querySelector(
+   '.how-to-enjoy__image--02'
+);
+
+if (eelImage) {
+   const eelObserver = new IntersectionObserver(
+      (entries, observer) => {
+         entries.forEach(entry => {
+            if (entry.isIntersecting) {
+               entry.target.classList.add('is-visible');
+               observer.unobserve(entry.target);
+            }
+         });
+      },
+      {
+         threshold: 0.45
+      }
+   );
+
+   eelObserver.observe(eelImage);
+}
