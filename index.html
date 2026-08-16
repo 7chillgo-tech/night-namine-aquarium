@@ -115,14 +115,14 @@
                             ひとりの夜をお楽しみください。<br>
                         </p>
 
-                        <a href="enjoy.html" class="button">夜の過ごし方をみる</a>
+                        <a href="#how-to-enjoy" class="button">夜の過ごし方をみる</a>
                     </div><!-- /.intro__content -->
                 </div><!-- /.intro__left -->
 
                 <div class="intro__right">
                     <div class="intro__image"><img src="images/intro_img2.png" alt="水族館水槽">
                         <!-- 星 -->
-                        <img src="logo/logo-star.svg" class="star star" alt="星" data-star="">
+                        <img src="logo/logo-star.svg" class="star" alt="星" data-star="">
                     </div>
                 </div><!-- /.intro__right -->
 
@@ -153,6 +153,10 @@
                             </p>
 
                         </div><!-- /.how-to-enjoy__content -->
+
+                        <!-- 星座線の通過点 -->
+                        <img src="logo/logo-star.svg" class="star star--enjoy01" alt="" data-star=""
+                            aria-hidden="true">
                     </div><!-- /.how-to-enjoy__item how-to-enjoy__item--011 -->
                 </div><!--how-to-enjoy__bg--01-->
 
@@ -187,6 +191,9 @@
                             昼とは違う姿を、のぞいてみませんか。
                         </p>
                     </div><!-- /.how-to-enjoy__content -->
+
+                    <!-- 星座線の通過点 -->
+                    <img src="logo/logo-star.svg" class="star star--enjoy02" alt="" data-star="" aria-hidden="true">
                 </div><!-- /.how-to-enjoy__item--02 -->
 
                 <div class="how-to-enjoy__item how-to-enjoy__item--03">
@@ -224,6 +231,9 @@
                             水槽を眺めながら、ほっとひと息。
                         </p>
                     </div><!-- /.how-to-enjoy__content -->
+
+                    <!-- 星座線の通過点 -->
+                    <img src="logo/logo-star.svg" class="star star--enjoy03" alt="" data-star="" aria-hidden="true">
                 </div><!-- /.how-to-enjoy__item--03 -->
 
             </div><!-- /.container -->
@@ -362,45 +372,48 @@
                     <div class="access__content">
 
 
+                        <div class="access__map-wrap">
                         <iframe title="なみね水族館の地図" class="access__map"
                             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7854.819577010754!2d133.01888598194898!3d34.13240115877572!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3550392e12681749%3A0x28249dce80806151!2z5aSn5bO2IOeZvea1nA!5e0!3m2!1sja!2sjp!4v1786079219607!5m2!1sja!2sjp"
                             style="border:0;" allowfullscreen="" loading="lazy"
                             referrerpolicy="strict-origin-when-cross-origin">
                         </iframe>
+                        </div><!-- /.access__map-wrap -->
 
                         <div class="access__cards">
                             <div class="access__card">
                                 <div class="access__icon"><img src="icons/access_icon_address.svg" alt="住所アイコン"></div>
+                                <h3 class="access__label">所在地</h3>
                                 <p class="access__description">
-                                    所在地<br>
                                     愛媛県今治市 大島・吉海町エリア<br>
                                     ※「なみね水族館」は架空の施設です
                                 </p>
                             </div><!--/.access__card-->
 
                             <div class="access__card">
-                                <div class="access__icon"><img src="icons/icon_car.svg" alt="車アイコン"></div>
+                                <div class="access__icon"><img src="icons/access_icon_parking.svg" alt="駐車場アイコン"></div>
+                                <h3 class="access__label">駐車場</h3>
                                 <p class="access__description">
-                                    車でお越しの方<br>
+                                    無料駐車場　120台<br>
+                                    17:00以降は第2駐車場も開放
+                                </p>
+                            </div><!--/.access__card-->
+
+                            <div class="access__card">
+                                <div class="access__icon"><img src="icons/icon_car.svg" alt="車アイコン"></div>
+                                <h3 class="access__label">車でお越しの方</h3>
+                                <p class="access__description">
                                     大島南ICから約10分<br>
                                     今治駅から約30分
                                 </p>
                             </div><!--/.access__card-->
 
                             <div class="access__card">
-                                <div class="access__icon"><img src="icons/access_icon_parking.svg" alt="駐車場アイコン"></div>
-                                <p class="access__description">
-                                    駐車場<br>
-                                    無料駐車場120台
-                                </p>
-                            </div><!--/.access__card-->
-
-                            <div class="access__card">
                                 <div class="access__icon"><img src="icons/access_icon_bus.svg" alt="バスアイコン"></div>
+                                <h3 class="access__label">バスでお越しの方</h3>
                                 <p class="access__description">
-                                    バスでお越しの方<br>
                                     今治駅から約40分<br>
-                                    「なみね水族館前」下車
+                                    「なみね水族館前」下車すぐ
                                 </p>
                             </div><!--/.access__card-->
                         </div><!--access__cards-->
@@ -429,7 +442,9 @@
     <footer>
         <div class="container">
             <div class="footer__content">
-                <div class="footer__logo"><img src="logo/logo-main.svg" alt="夜のなみね水族館"></div>
+                <div class="footer__logo">
+                    <a href="#fv"><img src="logo/logo-main.svg" alt="夜のなみね水族館"></a>
+                </div>
 
                 <nav class="footer__navigation">
                     <ul>
@@ -440,7 +455,7 @@
                         <li><a href="#access">アクセス</a></li>
                         <li><a href="#ticket">チケット</a></li>
                     </ul>
-                    <a href="#" class="footer__link">
+                    <a href="#" class="footer__link button">
                         なみね水族館公式サイト</a>
                 </nav>
 

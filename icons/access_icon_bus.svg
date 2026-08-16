@@ -1,9 +1,30 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none">
-<rect x="11" y="7" width="26" height="31" rx="5" stroke="#183B4E" stroke-width="2.5"/>
-<path d="M15 12H33V23H15V12Z" stroke="#183B4E" stroke-width="2.5" stroke-linejoin="round"/>
-<path d="M24 12V23" stroke="#183B4E" stroke-width="2.5"/>
-<circle cx="17" cy="30" r="2" fill="#183B4E"/>
-<circle cx="31" cy="30" r="2" fill="#183B4E"/>
-<path d="M16 38V41" stroke="#183B4E" stroke-width="2.5" stroke-linecap="round"/>
-<path d="M32 38V41" stroke="#183B4E" stroke-width="2.5" stroke-linecap="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="38" height="30" viewBox="5 8 38 30" fill="none" aria-hidden="true">
+<!-- 車体 -->
+<path d="M7 13
+   C7 10.8 8.8 9 11 9
+   H33
+   C38.5 9 42 12.8 42 18
+   V31
+   C42 32.1 41.1 33 40 33
+   H8
+   C6.9 33 6 32.1 6 31
+   V15
+   C6 14.2 6.4 13.5 7 13Z" fill="#183B4E"/>
+
+<!-- 窓 -->
+<rect x="10" y="13" width="8" height="8" rx="1" fill="#F3F0E8"/>
+<rect x="20" y="13" width="8" height="8" rx="1" fill="#F3F0E8"/>
+
+<!-- 前方の窓 -->
+<path d="M30 13H33
+   C36.5 13 38 15.2 38 18
+   V21H30Z" fill="#F3F0E8"/>
+
+<!-- タイヤ -->
+<circle cx="14" cy="33" r="4" fill="#183B4E"/>
+<circle cx="35" cy="33" r="4" fill="#183B4E"/>
+
+<!-- ホイール -->
+<circle cx="14" cy="33" r="1.5" fill="#F3F0E8"/>
+<circle cx="35" cy="33" r="1.5" fill="#F3F0E8"/>
 </svg>

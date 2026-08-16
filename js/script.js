@@ -23,8 +23,10 @@ function updateHeader() {
       'ticket'
    ];
 
+   // トップページはid、下層ページは data-dark 属性で「暗い背景」を判定する
    const isDark = currentSection
-      ? darkSections.includes(currentSection.id)
+      ? darkSections.includes(currentSection.id) ||
+        currentSection.hasAttribute('data-dark')
       : false;
 
    header.classList.toggle('is-scrolled', isScrolled);

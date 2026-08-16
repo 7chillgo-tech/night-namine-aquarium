@@ -35,6 +35,11 @@
    Base
 ======================================== */
 
+/* ヘッダーナビ・footerロゴのアンカーリンクを滑らかに移動させる */
+html {
+   scroll-behavior: smooth;
+}
+
 body {
    font-family: 'Zen Kaku Gothic New', sans-serif;
    font-size: 16px;
@@ -148,6 +153,34 @@ ol {
    transform: translate(3px, -3px);
 }
 
+/* リンクのホバー(ボタン以外) */
+
+/* 明るい背景の上に乗るリンクは、ボタンと同じホバー色に揃える。
+   色の変化だけでは気づきにくいため、下線も併せて出す */
+.footer__navigation ul a,
+.news__description a,
+.news__event-description a {
+   transition: color 0.3s ease;
+}
+
+.footer__navigation ul a:hover,
+.news__description a:hover,
+.news__event-description a:hover {
+   color: var(--color-button-hover);
+   text-decoration: underline;
+   text-underline-offset: 4px; /* 日本語の文字と下線がくっつかないよう離す */
+}
+
+/* ヘッダーのナビは背景が写真だったり明るい面だったりと一定でないため、
+   色を変えず不透明度で反応させる */
+.header__nav a:not(.header__ticket) {
+   transition: opacity 0.3s ease;
+}
+
+.header__nav a:not(.header__ticket):hover {
+   opacity: 0.7;
+}
+
 /* セクションタイトル */
 
 .section-title {
@@ -208,6 +241,33 @@ ol {
    width: 20px;
    position: absolute;
    z-index: 2;
+}
+
+/* 星座線の通過点。基準は position:relative の .how-to-enjoy__item。
+   写真に重ならないよう、背景の余白に置く。
+   ここの数値を動かすと線の通り道が変わる */
+.star--enjoy01,
+.star--enjoy02,
+.star--enjoy03 {
+   width: 13px; /* 20pxだと主張が強すぎたので控えめに */
+}
+
+/* 写真は右側。テキストの下の余白へ */
+.star--enjoy01 {
+   top: 82%;
+   left: 26%;
+}
+
+/* 写真は左側。テキストの上の余白へ */
+.star--enjoy02 {
+   top: 16%;
+   left: 74%;
+}
+
+/* 写真の下、説明文の左の余白へ */
+.star--enjoy03 {
+   top: 55%;
+   left: 20%;
 }
 
 /* ========================================
@@ -708,7 +768,9 @@ header.is-scrolled .header__ticket {
 /* how-to-enjoy　01 */
 
 .how-to-enjoy__image--01 {
-   position: static;
+   /* 星座線(z-index:1)を写真の裏に通すため、個別に前面へ出す */
+   position: relative;
+   z-index: 2;
    grid-area: image;
    width: 100%;
    height: 400px;
@@ -740,6 +802,7 @@ header.is-scrolled .header__ticket {
 
 .how-to-enjoy__image--02 {
    position: relative;
+   z-index: 2; /* 星座線を写真の裏に通す */
    grid-area: image;
 
    width: 100%;
@@ -806,6 +869,7 @@ header.is-scrolled .header__ticket {
 
 .how-to-enjoy__gallery--03 {
    position: absolute;
+   z-index: 2; /* 星座線を写真の裏に通す */
    top: 122px;
    left: 5%;
 
@@ -836,6 +900,11 @@ header.is-scrolled .header__ticket {
    width: 100%;
    text-align: center;
    margin-top: 30px;
+
+   /* 16pxのままだと写真に対して小さく、字間指定も無いので読みにくかった */
+   font-size: 17px;
+   font-weight: 500;
+   letter-spacing: 0.05em;
 }
 
 .how-to-enjoy__description--03 {
@@ -910,11 +979,29 @@ header.is-scrolled .header__ticket {
    margin-top: 150px;
 }
 
-/* 4項目を繋ぐタイムライン線 */
+/* 左右へ伸びる白い線。両端に向かって消えるので、線が唐突に切れない */
 .model-course__list::before {
    content: "";
    position: absolute;
-   top: 180px; /* アイコン下端150pxの下・時刻上端190pxの上(時刻寄り) */
+   top: 175px;
+   left: 0;
+   right: 0;
+   height: 1px;
+   background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.25) 14%,
+      rgba(255, 255, 255, 0.25) 86%,
+      rgba(255, 255, 255, 0) 100%
+   );
+   z-index: 0;
+}
+
+/* 4項目を繋ぐゴールドの線。::before より後に描かれるので白い線の上に乗る */
+.model-course__list::after {
+   content: "";
+   position: absolute;
+   top: 175px; /* アイコン下端150pxと時刻上端200pxの中間。上下25pxずつ空ける */
    left: calc((100% - 120px) / 8);  /* 120px = gap40px×3 */
    right: calc((100% - 120px) / 8);
    height: 1px;
@@ -937,7 +1024,7 @@ header.is-scrolled .header__ticket {
 .model-course__item::before {
    content: "";
    position: absolute;
-   top: 180px; /* 線と同じ高さ */
+   top: 175px; /* 線と同じ高さ */
    left: 50%;
    transform: translate(-50%, -50%); /* 丸の中心を線に合わせる */
    width: 10px;
@@ -962,15 +1049,16 @@ header.is-scrolled .header__ticket {
    justify-content: center;
    align-items: center;
 
-   /* アイコンと時刻の間だけ広く空ける(26px + gap14px = 40px) */
-   margin-bottom: 26px;
+   /* アイコンと時刻の間だけ広く空ける(36px + gap14px = 50px)。
+      線を挟むので、他の要素間より広めに取る */
+   margin-bottom: 36px;
 }
 
 .model-course__time {
    font-size: 25px;
    display: flex;
    gap: 15px;
-
+   letter-spacing: 0.1em; /* FVの時刻表示(0.12em)に近い字間を持たせる */
 }
 
 .model-course__description {
@@ -1158,20 +1246,27 @@ header.is-scrolled .header__ticket {
    padding-top: 150px;
 }
 
+/* iframeに直接border-radiusを当てると中身が角からはみ出すことがあるため、
+   親要素でoverflow:hiddenして確実に切り抜く */
+.access__map-wrap {
+   border-radius: 20px;
+   overflow: hidden;
+   line-height: 0; /* iframe下に出る隙間を消す */
+}
+
 #access iframe {
    display: block;
    /* .container が上限1200pxを持つので、ここは100%でよい。
       1200px固定だと画面幅1201〜1279pxで横スクロールが出る */
    width: 100%;
    height: 450px;
-   border-radius: 20px;
 }
 
 .access__cards {
    display: grid;
    grid-template-columns: repeat(2, 1fr);
-   gap: 40px;
-   padding: 50px 0 100px 0;
+   gap: 60px 40px; /* 見出し追加で背が伸びたぶん、行間を広めに */
+   padding: 100px 0 100px 0; /* 地図との間隔を他セクションのリズムに合わせる */
 
    /* 1200px幅だと1列580pxになり、本文290pxに対して余白が空きすぎるため絞る */
    width: min(860px, 100%);
@@ -1192,11 +1287,19 @@ header.is-scrolled .header__ticket {
    width: 50px;
    height: 50px;
 
-   background-color: rgba(243, 240, 232, 0.8);
-   border: 1px solid rgba(24, 59, 78, 0.12);
+   /* 背景(#B6C7D2)と近い半透明クリームだと円が沈むため、不透明のクリームにする */
+   background-color: var(--color-cream);
    border-radius: 50%;
-   
-   margin-bottom: 20px;
+
+   margin-bottom: 16px;
+}
+
+/* カードの1行目を見出しとして立たせる */
+.access__label {
+   font-size: 17px; /* 18pxだと本文に対して主張が強すぎた */
+   font-weight: 500;
+   letter-spacing: 0.05em;
+   margin-bottom: 10px;
 }
 
 /* SVGごとに縦横比が違うため、24px四方の枠に「収める」形で比率を保つ */
@@ -1313,25 +1416,122 @@ footer {
    font-size: 20px;
 }
 
+/* ロゴの原寸228pxはナビ・SNS列に対して大きいので縮める */
+.footer__logo img {
+   width: 180px;
+}
+
+/* ページ上部へ戻るリンク */
+.footer__logo a {
+   display: inline-block;
+   transition: opacity 0.3s ease;
+}
+
+.footer__logo a:hover {
+   opacity: 0.7;
+}
+
 .footer__sns-nav ul {
    display: flex;
-   gap: 40px;
+   gap: 32px;
+   margin-top: 20px; /* 元は li の padding-top。箱の計算を素直にするため親へ移動 */
 }
 
+/* 48pxは大きすぎ、32pxは小さすぎたので中間の40pxに */
 .footer__sns-img {
-   padding-top: 20px;
-   width: 48px;
-   height: 48px;
+   width: 40px;
+   height: 40px;
 }
 
-.footer__link {
+/* SVGが width/height を持たないため、a と img に明示的なサイズを与える。
+   これが無いと a を block 系にした瞬間に潰れる */
+.footer__sns-img a {
    display: block;
+   width: 100%;
+   height: 100%;
+
+   transition:
+      transform 0.3s ease,
+      opacity 0.3s ease;
+}
+
+.footer__sns-img img {
+   width: 100%;
+   height: 100%;
+}
+
+.footer__sns-img a:hover {
+   transform: translateY(-3px); /* ボタンと同じ「少し浮く」動きに揃える */
+   opacity: 0.75;
+}
+
+/* .button と併用。display は .button の inline-flex に任せる
+   (ここで display を指定すると後勝ちで矢印のレイアウトが崩れる) */
+.footer__link {
    margin-top: 20px;
 }
 
 .footer__copyright {
    text-align: center;
    padding: 100px;
+}
+
+/* ========================================
+   下層ページ共通
+======================================== */
+
+/* ページ上部の帯。背景を暗くすることで、白いヘッダーナビが読める */
+.page-hero {
+   display: flex;
+   align-items: center;
+   min-height: 320px;
+   padding-top: 88px; /* 固定ヘッダーの高さ分 */
+
+   background-color: var(--color-navy);
+   color: var(--color-white);
+}
+
+.page-hero__en {
+   font-family: 'DM Sans', sans-serif;
+   font-size: 14px;
+   font-weight: 500;
+   letter-spacing: 0.24em;
+   opacity: 0.8;
+}
+
+.page-hero__title {
+   margin-top: 12px;
+   font-size: 32px;
+   font-weight: 500;
+   letter-spacing: 0.08em;
+}
+
+/* 準備中ページ */
+.preparing {
+   padding: 120px 0 160px;
+   text-align: center;
+}
+
+.preparing__text {
+   font-size: 18px;
+   line-height: 2;
+   letter-spacing: 0.05em;
+   margin-bottom: 48px;
+}
+
+/* お知らせ一覧ページ。カードは index と同じ .news__item を使い回す */
+.news-page {
+   padding: 100px 0 160px;
+}
+
+.news-page__list {
+   width: min(860px, 100%);
+   margin-inline: auto;
+}
+
+.news-page__back {
+   margin-top: 80px;
+   text-align: center;
 }
 
 /* ========================================
@@ -1458,7 +1658,8 @@ footer {
 .how-to-enjoy__image--01 {
    width: 70%;
    height: 350px;
-   left: 28%;
+   /* position:static だった頃の名残で left は効いていなかったため削除
+      (relative にした今、残すと写真が右にずれる) */
 }
 
 .how-to-enjoy__description--01 {
@@ -1552,8 +1753,8 @@ footer {
    width: 110px;
    height: 110px;
 
-   /* アイコンと時刻の間だけ広く(18px + gap12px = 30px) */
-   margin-bottom: 18px;
+   /* アイコンと時刻の間だけ広く(26px + gap12px = 38px) */
+   margin-bottom: 26px;
 }
 
 .model-course__time {
@@ -1567,14 +1768,18 @@ footer {
 }
 
 /* タイムライン線・丸の位置を小さいPC用に再計算 */
-.model-course__list::before {
-   top: 130px; /* アイコン下端110pxの下・時刻上端140pxの上(時刻寄り) */
+.model-course__list::before,
+.model-course__list::after {
+   top: 129px; /* アイコン下端110pxと時刻上端148pxの中間 */
+}
+
+.model-course__list::after {
    left: calc((100% - 72px) / 8);  /* 72px = gap24px×3 */
    right: calc((100% - 72px) / 8);
 }
 
 .model-course__item::before {
-   top: 130px; /* 線と同じ高さ */
+   top: 129px; /* 線と同じ高さ */
    width: 8px;
    height: 8px;
 }
@@ -1675,8 +1880,8 @@ footer {
 }
 
 .access__cards {
-   gap: 40px 60px;
-   padding: 50px 20px 100px;
+   gap: 60px; /* 見出し追加で背が伸びたため、行間は基本側と同じ60pxに */
+   padding: 80px 20px 100px;
 }
 
 }
@@ -1690,5 +1895,15 @@ footer {
       opacity: 1;
       transform: none;
       transition: none;
+   }
+
+   /* ホバーの移動も止める(色・不透明度の変化は残す) */
+   .footer__sns-img a:hover {
+      transform: none;
+   }
+
+   /* スクロールの演出も止める */
+   html {
+      scroll-behavior: auto;
    }
 }
