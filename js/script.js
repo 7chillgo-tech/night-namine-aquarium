@@ -108,18 +108,28 @@ const menuButton = document.querySelector('.header__menu-button');
 const nav = document.querySelector('.header__nav');
 
 if (menuButton && nav) {
-   function closeMenu() {
-      header.classList.remove('is-menu-open');
-      menuButton.setAttribute('aria-expanded', 'false');
-      menuButton.setAttribute('aria-label', 'メニューを開く');
-   }
+   // 開閉に必要な処理を1か所にまとめる。
+   // 以前は「開く」と「閉じる」で別々に書いていたため、
+   // 片方に処理を足すともう片方に足し忘れる作りになっていた
+   function setMenu(isOpen) {
+      header.classList.toggle('is-menu-open', isOpen);
 
-   menuButton.addEventListener('click', () => {
-      const isOpen = header.classList.toggle('is-menu-open');
+      // メニューは position:fixed で画面に貼り付いているので、
+      // そのままだと指で動かしたときに「後ろのページだけ」が流れてしまう。
+      // 開いている間だけ body のスクロールを止める
+      document.body.classList.toggle('is-menu-locked', isOpen);
 
       // 支援技術に開閉状態を伝える
       menuButton.setAttribute('aria-expanded', String(isOpen));
       menuButton.setAttribute('aria-label', isOpen ? 'メニューを閉じる' : 'メニューを開く');
+   }
+
+   function closeMenu() {
+      setMenu(false);
+   }
+
+   menuButton.addEventListener('click', () => {
+      setMenu(!header.classList.contains('is-menu-open'));
    });
 
    // メニュー内のリンクを押したら閉じる(開いたまま残らないように)
@@ -134,6 +144,18 @@ if (menuButton && nav) {
       if (e.key === 'Escape') {
          closeMenu();
       }
+   });
+
+   // メニューの外側を触ったら閉じる。
+   // スマホにはEscキーが無いので、閉じる手段がボタンだけだと戻りにくい。
+   // ボタン自身の上で閉じてしまうと、上の click と打ち消し合って
+   // 「押しても開かない」状態になるため、ボタンとメニューの中は除外する
+   document.addEventListener('click', (e) => {
+      if (!header.classList.contains('is-menu-open')) return;
+      if (menuButton.contains(e.target)) return;
+      if (nav.contains(e.target)) return;
+
+      closeMenu();
    });
 
    // PC幅に戻したときに開きっぱなしを解除する
@@ -165,4 +187,42 @@ if (eelImage) {
    );
 
    eelObserver.observe(eelImage);
+}
+
+
+// 下部のチケットバー：FVを通り過ぎたら出し、TICKETとフッターでは引っ込める。
+// TICKETセクションには同じ「チケットを購入する」ボタンがあるため、
+// 両方出ていると押し場所が2つになって迷わせてしまう
+const mobileCta = document.querySelector('.mobile-cta');
+const ctaHideZones = [
+   document.getElementById('fv'),
+   document.getElementById('ticket'),
+   document.querySelector('footer')
+].filter(Boolean); // ページに無い要素は捨てる(下層ページ対策)
+
+if (mobileCta && ctaHideZones.length) {
+   // 「今どこが画面に入っているか」を覚えておく。
+   // 監視は要素ごとに別々に届くので、状態をまとめて持つ必要がある
+   const visibleZones = new Set();
+
+   const ctaObserver = new IntersectionObserver(
+      (entries) => {
+         entries.forEach(entry => {
+            if (entry.isIntersecting) {
+               visibleZones.add(entry.target);
+            } else {
+               visibleZones.delete(entry.target);
+            }
+         });
+
+         // 隠したい場所がひとつも見えていないときだけ出す。
+         // ウツボと違い unobserve しない。行き来のたびに切り替えたいため
+         mobileCta.classList.toggle('is-visible', visibleZones.size === 0);
+      },
+      {
+         threshold: 0 // 1pxでも重なっていれば「見えている」扱い
+      }
+   );
+
+   ctaHideZones.forEach(zone => ctaObserver.observe(zone));
 }

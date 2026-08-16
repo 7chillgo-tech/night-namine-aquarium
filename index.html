@@ -120,9 +120,11 @@
                 </div><!-- /.intro__left -->
 
                 <div class="intro__right">
-                    <div class="intro__image"><img src="images/intro_img2.png" alt="水族館水槽">
-                        <!-- 星 -->
-                        <img src="logo/logo-star.svg" class="star" alt="星" data-star="">
+                    <div class="intro__image"><img src="images/intro_img2.png" alt="水族館水槽"
+                            width="1015" height="1013" loading="lazy">
+                        <!-- 星。装飾なので alt は空にする(読み上げから外す)。
+                             星座線の座標をこの要素から取るため、loading="lazy" は付けない -->
+                        <img src="logo/logo-star.svg" class="star" alt="" data-star="" aria-hidden="true">
                     </div>
                 </div><!-- /.intro__right -->
 
@@ -142,15 +144,13 @@
                                 <span class="number-badge">01</span>
                                 好きな場所で、好きなだけ
                             </h3>
-                            <div class="how-to-enjoy__image--01"><img src="images/howtoenjoy_01.png" alt="水族館の水槽前の椅子">
+                            <div class="how-to-enjoy__image--01"><img src="images/howtoenjoy_01.jpg"
+                                    alt="水族館の水槽前の椅子" width="732" height="412" loading="lazy">
                             </div>
 
-                            <p class="how-to-enjoy__description how-to-enjoy__description--01">
-                                大水槽の前や、お気に入りの水槽のそばには、<br>
-                                椅子とテーブルをご用意しています。<br>
-                                少しだけでも、閉館までゆっくりでも。<br>
-                                好きな場所で、自分のペースで。
-                            </p>
+                            <!-- スマホでは <br> を無効にして自然に折り返させるため、
+                                 タグの前後で改行しない(HTMLの改行が半角スペースとして残るのを防ぐ) -->
+                            <p class="how-to-enjoy__description how-to-enjoy__description--01">大水槽の前や、<br class="br-sp">お気に入りの水槽のそばには、<br>椅子とテーブルをご用意しています。<br>少しだけでも、閉館までゆっくりでも。<br>好きな場所で、自分のペースで。</p>
 
                         </div><!-- /.how-to-enjoy__content -->
 
@@ -170,26 +170,31 @@
                          <img
                          src="images/howtoenjoy_02.png"
                          class="how-to-enjoy__image-base"
-                            alt="水槽内の岩穴">
+                            alt="水槽内の岩穴"
+                            width="724" height="406"
+                            loading="lazy">
 
+                        <!-- ウツボだけは loading="lazy" を付けない。
+                             画面に入った瞬間に現れるアニメーションの主役なので、
+                             読み込みが間に合わないと「何も出てこない」ように見えてしまう。
+                             45KBと軽いので、先に読んでも負担にならない -->
                         <img
                             src="images/howtoenjoy_02_eel.png"
                             class="how-to-enjoy__eel"
-                            alt="ウツボ"
-                            aria-hidden="true">
+                            alt=""
+                            aria-hidden="true"
+                            width="724" height="406">
 
                         <img
                             src="images/howtoenjoy_02_rock-front.png"
                             class="how-to-enjoy__rock-front"
-                            alt="手前の岩"
-                            aria-hidden="true">
+                            alt=""
+                            aria-hidden="true"
+                            width="724" height="406"
+                            loading="lazy">
                         </div><!--/.how-to-enjoy__image--02-->
 
-                        <p class="how-to-enjoy__description how-to-enjoy__description--02">
-                            昼は岩陰に隠れている生き物たちも、<br>
-                            夜になると、少しずつ動き出します。<br>
-                            昼とは違う姿を、のぞいてみませんか。
-                        </p>
+                        <p class="how-to-enjoy__description how-to-enjoy__description--02">昼は岩陰に隠れている生き物たちも、<br>夜になると、少しずつ動き出します。<br>昼とは違う姿を、のぞいてみませんか。</p>
                     </div><!-- /.how-to-enjoy__content -->
 
                     <!-- 星座線の通過点 -->
@@ -205,31 +210,30 @@
                         <div class="how-to-enjoy__gallery--03">
                             <div class="how-to-enjoy__box">
                                 <div class="how-to-enjoy__image--03"><img src="images/howtoenjoy_03_seto.png"
-                                        alt="瀬戸内冷製ポタージュ">
+                                        alt="瀬戸内冷製ポタージュ" width="397" height="278" loading="lazy">
                                 </div>
                                 <p class="how-to-enjoy__price">瀬戸内冷製ポタージュ￥500</p>
                             </div><!--/.how-to-enjoy__box-->
 
                             <div class="how-to-enjoy__box">
                                 <div class="how-to-enjoy__image--03"><img src="images/howtoenjoy_03_yanagi.png"
-                                        alt="夜凪レモンソーダ">
+                                        alt="夜凪レモンソーダ" width="397" height="278" loading="lazy">
                                 </div>
                                 <p class="how-to-enjoy__price">夜凪レモンソーダ￥450</p>
                             </div><!--/.how-to-enjoy__box-->
 
                             <div class="how-to-enjoy__box">
                                 <div class="how-to-enjoy__image--03"><img src="images/howtoenjoy_03_azarashi.png"
-                                        alt="あざらしミルク">
+                                        alt="あざらしミルク" width="397" height="278" loading="lazy">
                                 </div>
                                 <p class="how-to-enjoy__price">あざらしミルク￥700</p>
                             </div><!--/.how-to-enjoy__box-->
 
                         </div><!--/.how-to-enjoy__gallery--03-->
 
-                        <p class="how-to-enjoy__description how-to-enjoy__description--03">
-                            夜限定の軽食やドリンクをご用意。<br>
-                            水槽を眺めながら、ほっとひと息。
-                        </p>
+                        <p class="how-to-enjoy__scroll-hint">→ 横にスクロールできます</p>
+
+                        <p class="how-to-enjoy__description how-to-enjoy__description--03">夜限定の軽食やドリンクをご用意。<br>水槽を眺めながら、ほっとひと息。</p>
                     </div><!-- /.how-to-enjoy__content -->
 
                     <!-- 星座線の通過点 -->
@@ -305,12 +309,13 @@
                         <div class="news__event-column">
                             <div class="news__heading">
                                 <h3 class="news__title">EVENT</h3>
-                                <img src="logo/logo-star.svg" class="star star--event" alt="星">
+                                <img src="logo/logo-star.svg" class="star star--event" alt="" aria-hidden="true">
                                 <p class="section-subtitle">イベント</p>
                             </div><!-- /.news__heading -->
 
                             <div class="news__event">
-                                <div class="news__event-image"><img src="images/news_event.png" alt="イベント画像"></div>
+                                <div class="news__event-image"><img src="images/event__image.jpg" alt="イベント画像"
+                                        width="800" height="430" loading="lazy"></div>
 
                                 <div class="news__event-text">
                                     <p class="news__event-date"><span class="news__event-new">NEW</span>07.12 SUN 19:00~</p>
@@ -322,7 +327,7 @@
                         <div class="news__info-column">
                             <div class="news__heading">
                                 <h3 class="news__title">INFORMATION</h3>
-                                <img src="logo/logo-star.svg" class="star star--info" alt="星">
+                                <img src="logo/logo-star.svg" class="star star--info" alt="" aria-hidden="true">
                                 <p class="section-subtitle">お知らせ</p>
                             </div><!-- /.news__heading -->
 
@@ -384,10 +389,7 @@
                             <div class="access__card">
                                 <div class="access__icon"><img src="icons/access_icon_address.svg" alt="住所アイコン"></div>
                                 <h3 class="access__label">所在地</h3>
-                                <p class="access__description">
-                                    愛媛県今治市 大島・吉海町エリア<br>
-                                    ※「なみね水族館」は架空の施設です
-                                </p>
+                                <p class="access__description">愛媛県今治市 <br class="br-sp">大島・吉海町エリア<span class="access__note">※「なみね水族館」は架空の施設です</span></p>
                             </div><!--/.access__card-->
 
                             <div class="access__card">
