@@ -103,6 +103,47 @@ if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(drawConstellation);
 }
 
+// ハンバーガーメニューの開閉
+const menuButton = document.querySelector('.header__menu-button');
+const nav = document.querySelector('.header__nav');
+
+if (menuButton && nav) {
+   function closeMenu() {
+      header.classList.remove('is-menu-open');
+      menuButton.setAttribute('aria-expanded', 'false');
+      menuButton.setAttribute('aria-label', 'メニューを開く');
+   }
+
+   menuButton.addEventListener('click', () => {
+      const isOpen = header.classList.toggle('is-menu-open');
+
+      // 支援技術に開閉状態を伝える
+      menuButton.setAttribute('aria-expanded', String(isOpen));
+      menuButton.setAttribute('aria-label', isOpen ? 'メニューを閉じる' : 'メニューを開く');
+   });
+
+   // メニュー内のリンクを押したら閉じる(開いたまま残らないように)
+   nav.addEventListener('click', (e) => {
+      if (e.target.closest('a')) {
+         closeMenu();
+      }
+   });
+
+   // Escキーでも閉じられるようにする
+   document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+         closeMenu();
+      }
+   });
+
+   // PC幅に戻したときに開きっぱなしを解除する
+   window.addEventListener('resize', debounce(() => {
+      if (window.innerWidth > 1200) {
+         closeMenu();
+      }
+   }));
+}
+
 // HOW TO 02：うつぼが岩穴から現れる
 const eelImage = document.querySelector(
    '.how-to-enjoy__image--02'

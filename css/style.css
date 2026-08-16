@@ -227,8 +227,9 @@ ol {
    font-family: 'DM Sans', sans-serif;
 }
 
-/* 通常PCではハンバーガーを隠す */
-.header__menu-button {
+/* 通常PCではハンバーガーと下部固定バーを隠す */
+.header__menu-button,
+.mobile-cta {
    display: none;
 }
 
@@ -252,22 +253,22 @@ ol {
    width: 13px; /* 20pxだと主張が強すぎたので控えめに */
 }
 
-/* 写真は右側。テキストの下の余白へ */
+/* 写真は右側。その左の縁のすぐ外に置く */
 .star--enjoy01 {
-   top: 82%;
-   left: 26%;
+   top: 48%;
+   left: 36%;
 }
 
-/* 写真は左側。テキストの上の余白へ */
+/* 写真は左側。その右の縁のすぐ外に置く */
 .star--enjoy02 {
-   top: 16%;
-   left: 74%;
+   top: 52%;
+   left: 67%;
 }
 
-/* 写真の下、説明文の左の余白へ */
+/* 3枚並びの左端の外。料金テキストに重ならない高さに */
 .star--enjoy03 {
-   top: 55%;
-   left: 20%;
+   top: 32%;
+   left: 8%;
 }
 
 /* ========================================
@@ -702,7 +703,9 @@ header.is-scrolled .header__ticket {
 
 .how-to-enjoy__content {
    position: relative;
-   width: 1200px;
+   /* 1200px固定だと、画面幅1201〜1279pxで container(100%-80px)を超えて
+      横スクロールが出るため上限指定にする */
+   width: min(1200px, 100%);
    height: 740px;
 }
 
@@ -763,6 +766,10 @@ header.is-scrolled .header__ticket {
 .how-to-enjoy__description--02 {
    align-self: start;
    margin-top: 16px;
+
+   /* タイトルは .number-badge(56px) + margin-right(10px) の分だけ
+      文字が右から始まるので、説明文も同じだけ下げて左端を揃える */
+   padding-left: 66px;
 }
 
 /* how-to-enjoy　01 */
@@ -1548,11 +1555,6 @@ footer {
       flex-shrink: 0;
    }
 
-   /* TICKET以外のナビを隠す */
-   .header__nav li:not(.header__item) {
-      display: none;
-   }
-
    /* TICKETを右側に配置 */
    .header__nav {
       display: block;
@@ -1564,6 +1566,70 @@ footer {
    .header__nav ul {
       gap: 0;
       padding: 0;
+   }
+
+   /* ▼ ハンバーガーメニュー
+      閉じているときはTICKET以外を隠し、開いたら画面右上からパネルを出す */
+   .header__nav li:not(.header__item) {
+      display: none;
+   }
+
+   header.is-menu-open .header__nav {
+      position: fixed;
+      top: 88px;
+      right: 20px;
+      left: 20px;
+
+      padding: 24px 28px;
+
+      background-color: rgba(24, 59, 78, 0.96);
+      border-radius: 16px;
+      box-shadow: 0 12px 32px rgba(2, 22, 39, 0.25);
+      backdrop-filter: blur(8px);
+   }
+
+   header.is-menu-open .header__nav ul {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+   }
+
+   header.is-menu-open .header__nav li:not(.header__item) {
+      display: block;
+      width: 100%;
+   }
+
+   /* 指で押せる高さを確保する */
+   header.is-menu-open .header__nav li:not(.header__item) a {
+      display: block;
+      padding: 14px 4px;
+      color: var(--color-white);
+      text-shadow: none;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+   }
+
+   header.is-menu-open .header__item {
+      margin-top: 16px;
+   }
+
+   /* 開いている間は×印にする */
+   header.is-menu-open .header__menu-button span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+   }
+
+   header.is-menu-open .header__menu-button span:nth-child(2) {
+      opacity: 0;
+   }
+
+   header.is-menu-open .header__menu-button span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+   }
+
+   .header__menu-button span {
+      transition:
+         transform 0.3s ease,
+         opacity 0.3s ease;
    }
 
    .header__ticket {
@@ -1889,6 +1955,548 @@ footer {
 /* ========================================
    ウツボ：動き減らす設定用
 ======================================== */
+
+/* ========================================
+   スマホ 〜768px
+   方針:横スクロールと文字の溢れを出さないこと。
+   固定px幅をやめ、多カラムは全て1カラムに積む
+======================================== */
+
+@media (max-width: 768px) {
+
+   .container {
+      width: calc(100% - 40px);
+   }
+
+   /* ---- セクションタイトル ----
+      PCでは left:130px の絶対配置。スマホでは幅が足りないので流し込みに戻す */
+   .section-title {
+      position: static;
+      font-size: 18px;
+      margin-bottom: 32px;
+   }
+
+   #intro,
+   #how-to-enjoy,
+   #news,
+   #access {
+      padding-top: 80px;
+   }
+
+   /* ---- FV ---- */
+   #fv {
+      min-height: 560px;
+   }
+
+   /* absolute のままだとイベント情報の上に浮いて重なるので、
+      キャッチコピーとイベント情報を通常の縦積みにする */
+   .fv__message {
+      position: static;
+      transform: none;
+      padding-top: 140px;
+   }
+
+   #fv .container {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      padding-inline: 20px;
+   }
+
+   .fv__title {
+      font-size: 32px;
+   }
+
+   .fv__subtitle {
+      font-size: 15px;
+   }
+
+   .fv__event {
+      position: static;
+      margin: 0;
+      padding-top: 48px; /* キャッチコピーとの間隔 */
+
+      /* 基本指定の min-width:480px を必ず打ち消す。
+         残すと375px幅の端末で横スクロールが出る */
+      width: auto;
+      min-width: 0;
+      transform: none;
+   }
+
+   /* 情報を絞る。「夜のなみね水族館」は真上のヘッダーロゴと重複、
+      「SUMMER 2026」は装飾なので、狭い画面では落とす */
+   .fv__event-name,
+   .fv__event-label {
+      display: none;
+   }
+
+   .fv__event-time {
+      font-size: 26px;
+   }
+
+   /* ---- 下部固定のチケットバー ---- */
+   .mobile-cta {
+      display: block;
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 90; /* ヘッダー(100)より下、他の要素より上 */
+
+      padding: 12px 20px calc(12px + env(safe-area-inset-bottom));
+
+      background-color: rgba(2, 22, 39, 0.92);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+   }
+
+   .mobile-cta__button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      padding: 14px;
+
+      color: var(--color-white);
+      background-color: var(--color-button-hover);
+      border-radius: 999px;
+
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+   }
+
+   /* 固定バーの分だけ、ページ末尾に逃げを作る */
+   footer {
+      padding-bottom: 72px;
+   }
+
+   /* ヘッダーからTICKETを外す(ハンバーガーメニュー内には残る) */
+   .header__nav {
+      display: none;
+   }
+
+   header.is-menu-open .header__nav {
+      display: block;
+   }
+
+   .header__menu-button {
+      right: 20px;
+   }
+
+   /* ---- INTRO ---- */
+   #intro .container {
+      display: block;
+   }
+
+   .intro__image {
+      max-width: 100%;
+      margin: 40px auto 0;
+   }
+
+   .intro__title {
+      font-size: 26px;
+   }
+
+   .intro__description {
+      font-size: 15px;
+   }
+
+   /* ---- HOW TO ENJOY ----
+      PCは position:absolute と直値で組まれているので、
+      スマホでは全て解除して「タイトル→写真→説明文」の縦積みに戻す */
+   .how-to-enjoy__item,
+   .how-to-enjoy__item--01,
+   .how-to-enjoy__item--02 {
+      min-height: 0;
+      padding: 48px 0;
+   }
+
+   /* 基本指定が width:1200px / height:740px の直値。
+      01・02はより詳細な指定で100%になるが、03は素通りして溢れるので全て上書きする */
+   .how-to-enjoy__content {
+      width: 100%;
+      height: auto;
+   }
+
+   .how-to-enjoy__item--01 .how-to-enjoy__content,
+   .how-to-enjoy__item--02 .how-to-enjoy__content {
+      display: block;
+   }
+
+   .how-to-enjoy__title {
+      font-size: 19px;
+      margin-bottom: 24px;
+   }
+
+   .number-badge {
+      width: 40px;
+      height: 40px;
+      line-height: 40px;
+      font-size: 14px;
+      margin-right: 8px;
+   }
+
+   .how-to-enjoy__image--01,
+   .how-to-enjoy__gallery--03 {
+      position: static;
+      width: 100%;
+      height: auto;
+      left: auto;
+      top: auto;
+   }
+
+   .how-to-enjoy__image--01 {
+      height: 220px;
+      border-radius: 24px;
+   }
+
+   /* --02 の中の3枚は position:absolute; inset:0 なので、
+      親を static にすると写真が親から外れて飛び出す。
+      relative のまま left だけ打ち消し、高さを指定する */
+   .how-to-enjoy__image--02 {
+      position: relative;
+      left: auto;
+      top: auto;
+      width: 100%;
+      height: 240px;
+      border-radius: 24px;
+   }
+
+   /* ▼ ドリンク3枚は横スワイプに。
+      縦積みだと 300px×3 = 900px の長さになり、スクロールが苦痛になる */
+   .how-to-enjoy__gallery--03 {
+      display: flex;
+      gap: 16px;
+      width: 100%;
+      margin-top: 24px;
+
+      overflow-x: auto;
+      scroll-snap-type: x mandatory; /* カードがぴたっと止まる */
+      padding-bottom: 8px;
+   }
+
+   .how-to-enjoy__box {
+      flex: 0 0 72%; /* 次のカードが少し見えて「横に続く」と伝わる幅 */
+      scroll-snap-align: start;
+   }
+
+   .how-to-enjoy__image--03,
+   .how-to-enjoy__image--03 img {
+      width: 100%;
+   }
+
+   .how-to-enjoy__price {
+      margin-top: 16px;
+      font-size: 15px;
+   }
+
+   /* 絶対配置と782px固定をやめる。バッジ分の字下げも不要 */
+   .how-to-enjoy__description,
+   .how-to-enjoy__description--01,
+   .how-to-enjoy__description--02,
+   .how-to-enjoy__description--03 {
+      position: static;
+      width: 100%;
+      margin-top: 24px;
+      padding-left: 0;
+      top: auto;
+      left: auto;
+      font-size: 15px;
+      line-height: 1.9;
+   }
+
+   /* 星座線はスマホでは幅が狭く、線が窮屈になるため隠す */
+   #constellation-svg,
+   .star {
+      display: none;
+   }
+
+   /* ---- MODEL COURSE ---- */
+   #model-course {
+      padding-top: 60px;
+   }
+
+   .model-course__header {
+      display: block;
+      text-align: center;
+   }
+
+   .model-course__title {
+      margin: 12px 0 20px;
+      font-size: 17px;
+   }
+
+   /* ▼ 縦型タイムラインに作り替える。
+      横並びのままだと時系列がZ字に飛んで、時間の流れが読めなくなるため。
+      ゴールドの線が上から下へ降りる形になり、コンセプトはむしろ強く出る */
+   .model-course__list {
+      display: block;
+      margin-top: 48px;
+      padding-left: 56px; /* 左端に線と丸を通す余白 */
+   }
+
+   /* 縦に貫くゴールドの線。最初と最後の丸の中心を結ぶ */
+   .model-course__list::before {
+      top: 36px;
+      bottom: 36px;
+      left: 23px;
+      right: auto;
+
+      width: 1px;
+      height: auto;
+
+      background: var(--color-gold);
+      opacity: 0.5;
+   }
+
+   /* 横並び用の白い線は縦組みでは不要 */
+   .model-course__list::after {
+      display: none;
+   }
+
+   .model-course__item {
+      display: grid;
+      grid-template-columns: 56px 1fr;
+      align-items: center;
+      column-gap: 16px;
+
+      min-height: 0;
+      gap: 0 16px;
+      padding: 14px 0;
+   }
+
+   .model-course__item + .model-course__item {
+      margin-top: 8px;
+   }
+
+   /* 丸を各項目の左、線の上に置く */
+   .model-course__item::before {
+      top: 50%;
+      left: -33px;
+      transform: translateY(-50%);
+      width: 9px;
+      height: 9px;
+   }
+
+   .model-course__icon {
+      grid-column: 1;
+      grid-row: 1 / 3;
+      width: 56px;
+      height: 56px;
+      margin-bottom: 0;
+   }
+
+   .model-course__icon img {
+      max-width: 100%;
+      max-height: 56px;
+   }
+
+   .model-course__text {
+      grid-column: 2;
+      align-items: flex-start;
+      gap: 4px;
+   }
+
+   .model-course__time {
+      grid-column: 2;
+      font-size: 19px;
+   }
+
+   .model-course__description {
+      grid-column: 2;
+      width: 100%;
+      font-size: 14px;
+      text-align: left;
+      padding-bottom: 0;
+   }
+
+   /* ---- NEWS ---- */
+   .news__content {
+      display: block;
+      width: 100%;
+      padding-inline: 0;
+      padding-bottom: 48px;
+   }
+
+   .news__event,
+   .news__info-column,
+   .news__info {
+      width: 100%;
+   }
+
+   .news__info-column {
+      margin-top: 64px;
+   }
+
+   .news__event-image {
+      max-width: 100%;
+   }
+
+   .news__item {
+      display: grid;
+      grid-template-columns: 40px 1fr;
+      column-gap: 16px;
+      row-gap: 2px;
+      padding: 16px 0;
+   }
+
+   .news__icon {
+      grid-column: 1;
+      grid-row: 1 / 3;
+      width: 40px;
+      height: 40px;
+   }
+
+   .news__date {
+      grid-column: 2;
+      grid-row: 1;
+      font-size: 13px;
+   }
+
+   .news__description {
+      grid-column: 2;
+      grid-row: 2;
+      font-size: 15px;
+   }
+
+   .news__button-wrap {
+      padding-bottom: 80px;
+   }
+
+   /* ---- ACCESS ---- */
+   #access iframe {
+      height: 260px;
+   }
+
+   /* 地図は画面幅いっぱいに。狭い画面では地図が大きいほど読み取りやすく、
+      セクションの区切りとしても効く。
+      container の左右余白20pxぶんだけ広げて画面端に合わせる */
+   .access__map-wrap {
+      width: calc(100% + 40px);
+      margin-inline: -20px;
+      border-radius: 0;
+   }
+
+   .access__cards {
+      grid-template-columns: 1fr;
+      gap: 24px;
+      padding: 40px 0 72px;
+   }
+
+   /* ▼ アイコンを左、テキストを右の横並びに。
+      中央揃えの塊が4回続くと単調で、縦にも長くなるため */
+   .access__card {
+      display: grid;
+      grid-template-columns: 44px 1fr;
+      column-gap: 16px;
+      align-items: start;
+      text-align: left;
+   }
+
+   .access__icon {
+      grid-column: 1;
+      grid-row: 1 / 3;
+      width: 44px;
+      height: 44px;
+      margin-bottom: 0;
+   }
+
+   .access__label {
+      grid-column: 2;
+      grid-row: 1;
+      margin-bottom: 4px;
+      font-size: 16px;
+   }
+
+   .access__description {
+      grid-column: 2;
+      grid-row: 2;
+      text-align: left;
+      font-size: 14px;
+   }
+
+   /* ---- TICKET ---- */
+   /* 高さが足りないと写真が潰れて何の写真か分からなくなる */
+   #ticket {
+      min-height: 420px;
+   }
+
+   .ticket__content {
+      min-height: 0;
+      padding: 88px 0;
+      gap: 32px;
+   }
+
+   .ticket__title {
+      font-size: 20px;
+      padding-bottom: 0;
+      text-align: center;
+   }
+
+   /* min-width:250px のままだと画面幅に対して窮屈 */
+   #ticket .button {
+      min-width: 0;
+      width: 100%;
+      max-width: 260px;
+      justify-content: space-between;
+   }
+
+   /* ---- footer ---- */
+   .footer__content {
+      display: block;
+      min-height: 0;
+      padding-top: 64px;
+      text-align: center;
+   }
+
+   .footer__logo img {
+      width: 150px;
+   }
+
+   .footer__navigation {
+      margin-top: 40px;
+   }
+
+   /* 2カラムのままだと「夜のなみね水族館とは」×2列で幅が足りないため1カラムに */
+   .footer__navigation ul {
+      grid-template-rows: none;
+      grid-auto-flow: row;
+      justify-items: center;
+      gap: 12px;
+   }
+
+   .footer__sns {
+      margin-top: 40px;
+   }
+
+   .footer__sns-nav ul {
+      justify-content: center;
+   }
+
+   .footer__copyright {
+      padding: 64px 0;
+      font-size: 13px;
+   }
+
+   /* ---- 下層ページ ---- */
+   .page-hero {
+      min-height: 220px;
+      padding-top: 88px;
+   }
+
+   .page-hero__title {
+      font-size: 22px;
+   }
+
+   .preparing {
+      padding: 72px 0 96px;
+   }
+
+   .news-page {
+      padding: 64px 0 96px;
+   }
+}
 
 @media (prefers-reduced-motion: reduce) {
    .how-to-enjoy__eel {
