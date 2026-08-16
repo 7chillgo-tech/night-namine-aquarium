@@ -781,14 +781,19 @@ header.is-scrolled .header__ticket {
 }
 
 .how-to-enjoy__item--01 .how-to-enjoy__content {
-   grid-template-columns: 380px 1fr;
+   /* 380px だと padding-left:66px を引いて文字幅314px。
+      いちばん長い行「大水槽の前や、お気に入りの水槽のそばには、」が
+      21文字 × 18px = 378px あり、64px あふれて折り返していた。
+      460px にすると 460 − 66 = 394px 確保でき、16px の余裕が出る */
+   grid-template-columns: 460px 1fr;
    grid-template-areas:
       "title image"
       "description image";
 }
 
 .how-to-enjoy__item--02 .how-to-enjoy__content {
-   grid-template-columns: 1fr 380px;
+   /* 01と同じ理由で460pxに(左右が反転しているだけ) */
+   grid-template-columns: 1fr 460px;
    grid-template-areas:
       "image title"
       "image description";
@@ -1798,18 +1803,19 @@ footer {
 
 /* 01 */
 .how-to-enjoy__image--01 {
-   width: 70%;
    height: 350px;
    /* position:static だった頃の名残で left は効いていなかったため削除
-      (relative にした今、残すと写真が右にずれる) */
+      (relative にした今、残すと写真が右にずれる)。
+      width:70% も削除。グリッドの列幅に任せれば列いっぱいに広がり、
+      右側にできていた宙に浮いた余白が無くなる */
 }
 
 /* 02 */
 .how-to-enjoy__image--02 {
-   width: 75%;
    height: 400px;
    /* 01と同じ理由で left:20% を削除。
-      relative なので、残すと写真が列の中で右に約100pxずれる */
+      relative なので、残すと写真が列の中で右に約100pxずれる。
+      width:75% も01と同じ理由で削除 */
 }
 
 /* 03 */
@@ -1992,6 +1998,39 @@ footer {
    gap: 60px; /* 見出し追加で背が伸びたため、行間は基本側と同じ60pxに */
    padding: 80px 20px 100px;
 }
+
+}
+
+/* ========================================
+   タブレット 〜900px
+   HOW TO ENJOY 01・02 のみ。
+   テキスト列460px + gap80px を横に並べると、900pxで写真が280pxまで
+   潰れる(769pxでは149px)。ここから下は縦積みに切り替える。
+
+   ※このブロックは必ず @media (max-width: 768px) より前に置くこと。
+     同じ強さの指定は後に書いたほうが勝つため、順序が逆だと
+     900px用がスマホ用を上書きしてしまう
+======================================== */
+
+@media (max-width: 900px) {
+
+   .how-to-enjoy__item--01,
+   .how-to-enjoy__item--02 {
+      min-height: 0;
+   }
+
+   /* 1200pxブロックで height:700px の直値が入っているので、
+      縦積みで中身が伸びた分を高さに追従させる */
+   .how-to-enjoy__content {
+      height: auto;
+   }
+
+   /* block にすると grid-template-columns も grid-area も効かなくなり、
+      HTMLに書いた順(タイトル→写真→説明文)で上から積まれる */
+   .how-to-enjoy__item--01 .how-to-enjoy__content,
+   .how-to-enjoy__item--02 .how-to-enjoy__content {
+      display: block;
+   }
 
 }
 
