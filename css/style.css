@@ -1159,7 +1159,10 @@ header.is-scrolled .header__ticket {
 }
 
 #access iframe {
-   width: 1200px;
+   display: block;
+   /* .container が上限1200pxを持つので、ここは100%でよい。
+      1200px固定だと画面幅1201〜1279pxで横スクロールが出る */
+   width: 100%;
    height: 450px;
    border-radius: 20px;
 }
@@ -1169,6 +1172,10 @@ header.is-scrolled .header__ticket {
    grid-template-columns: repeat(2, 1fr);
    gap: 40px;
    padding: 50px 0 100px 0;
+
+   /* 1200px幅だと1列580pxになり、本文290pxに対して余白が空きすぎるため絞る */
+   width: min(860px, 100%);
+   margin-inline: auto;
 }
 
 .access__card {
@@ -1192,13 +1199,17 @@ header.is-scrolled .header__ticket {
    margin-bottom: 20px;
 }
 
+/* SVGごとに縦横比が違うため、24px四方の枠に「収める」形で比率を保つ */
 .access__icon img {
-   width: 24px;
-   height: 24px;
+   width: auto;
+   height: auto;
+   max-width: 24px;
+   max-height: 24px;
 }
 
 .access__description {
    text-align: center;
+   letter-spacing: 0.05em; /* 他セクションと字間を揃える */
 }
 
 /* ========================================
@@ -1219,7 +1230,7 @@ header.is-scrolled .header__ticket {
 
 .ticket__content,
 .ticket__title {
-   font-weight: 300;
+   font-weight: 400;
 }
 
 .ticket__content {
