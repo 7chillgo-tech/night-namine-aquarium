@@ -1,6 +1,11 @@
 // js/script.js
 
 
+// 「動きを減らす」設定の人には、フェードやパララックスなどの演出を出さない。
+// あちこちのアニメーションから共通で参照する
+const motionMedia = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+
 // スクロール時にヘッダーの背景色を変更する
 const header = document.querySelector('header');
 const headerLogo = document.querySelector('.header__logo img');
@@ -102,6 +107,11 @@ function buildSmoothPath(points) {
    return d;
 }
 
+// 星座線を「たどってきた分だけ」表示するための、
+// 描画済みのpath要素とその全長(px)を覚えておく変数
+let constellationPath = null;
+let constellationLength = 0;
+
 // 星座の線を描画する関数
 function drawConstellation() {
     const svg = document.getElementById('constellation-svg');
@@ -140,6 +150,20 @@ function drawConstellation() {
     path.setAttribute('stroke-opacity', '0.4');
     svg.appendChild(path);
 
+    // 星座線を、最初から全部ではなく「スクロールでたどってきた分だけ」見せる。
+    // stroke-dasharrayに線の全長を指定すると、stroke-dashoffsetで隠す量を
+    // 調整できるようになる(dashoffset=全長で全部隠れる、0で全部見える)
+    if (motionMedia.matches) {
+        // 動きを減らす設定の人には、最初から線を全部見せる
+        constellationPath = null;
+    } else {
+        const length = path.getTotalLength();
+        path.style.strokeDasharray = length;
+        constellationPath = path;
+        constellationLength = length;
+        updateConstellationDraw();
+    }
+
     // 星本体(◆)も同じ座標にまとめて描く場合はここでcircle/pathを追加。
     // ただし見えない通過点(FV・MODEL COURSE)には丸を描かない
     points.forEach((p, i) => {
@@ -151,8 +175,62 @@ function drawConstellation() {
         star.setAttribute('r', i % 3 === 0 ? 4 : 2); // 3個に1個だけ大きく＝強弱をつける
         star.setAttribute('fill', '#F3F0E8');
         star.setAttribute('opacity', i % 3 === 0 ? 1 : 0.7);
+
+        // 星ごとに瞬きのタイミングをずらす(実際の点滅はCSSの@keyframesで行う)
+        if (!motionMedia.matches) {
+            star.setAttribute('class', 'constellation-star');
+            star.style.setProperty('--twinkle-delay', `${(i % 5) * 0.6}s`);
+        }
+
         svg.appendChild(star);
     });
+}
+
+// pathの中で、y座標がtargetYに一番近い位置(=線の先端からの距離)を
+// 二分探索で見つける。
+// 最初「ページ全体のスクロール%」で線の進み具合を決めていたが、
+// 星座線はHOW TO ENJOYでジグザグに大きく横へ振れる区間と、
+// ほぼまっすぐ縦に伸びる区間が混ざっているため、スクロール%と
+// 線の長さ%がまったく対応せず、今見ている場所より線が
+// 手前で止まって見える(=「途中で消えている」ように見える)原因になっていた。
+// 実際のy座標で探すことで、今スクロールして見えている高さと
+// 線の先端がずれないようにする
+function getLengthAtY(path, totalLength, targetY, iterations = 24) {
+    let lo = 0;
+    let hi = totalLength;
+
+    for (let i = 0; i < iterations; i++) {
+        const mid = (lo + hi) / 2;
+        const point = path.getPointAtLength(mid);
+
+        if (point.y < targetY) {
+            lo = mid;
+        } else {
+            hi = mid;
+        }
+    }
+
+    return lo;
+}
+
+// 星座線を、今のスクロール位置に応じてどこまで表示するか更新する
+function updateConstellationDraw() {
+    if (!constellationPath) return;
+
+    const svg = document.getElementById('constellation-svg');
+    // 1200px以下は#constellation-svg自体をCSSでdisplay:noneにしてあるので、
+    // 計算しても見えないし、隠れている間はgetBoundingClientRectの値も
+    // あてにならないため何もしない
+    if (!svg || getComputedStyle(svg).display === 'none') return;
+
+    const scrollY = window.scrollY || window.pageYOffset;
+
+    // 画面のちょうど下端だと線の先端が画面外(見えない場所)になるので、
+    // 少し手前(画面の85%の高さ)を「今どこまで見えているか」の基準にする
+    const targetY = scrollY + window.innerHeight * 0.85;
+
+    const length = getLengthAtY(constellationPath, constellationLength, targetY);
+    constellationPath.style.strokeDashoffset = constellationLength - length;
 }
 
 // 連続で呼ばれても、最後の1回だけ実行する(resizeの負荷対策)
@@ -170,6 +248,125 @@ window.addEventListener('resize', debounce(drawConstellation));
 // フォント読み込み完了後にも再描画する
 if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(drawConstellation);
+}
+
+
+// 背景画像の軽いパララックス(FV・MODEL COURSE・TICKET)。
+// スクロールに対して背景だけをわずかに遅らせて動かし、奥行きを出す。
+//
+// 【重要】縦方向(background-position-y)ではなく横方向をずらす。
+// これらの写真はどれも横長で、background-size:coverだと縦方向の
+// はみ出し(=動かせる余白)がほぼ0になる(例:modelcourse.jpgは1445×600で
+// 横に長いため、箱の高さに合わせて拡大すると縦の余白が消える)。
+// その状態で縦にずらすと、写真の上下に背景色(何もない部分)が
+// 見えてしまう。横方向は余白が十分あるので、そちらを揺らす
+const parallaxSections = [
+    { el: document.getElementById('fv'), naturalWidth: 1440, naturalHeight: 850 },
+    { el: document.getElementById('model-course'), naturalWidth: 1445, naturalHeight: 600 },
+    { el: document.getElementById('ticket'), naturalWidth: 1672, naturalHeight: 941 },
+].filter(item => item.el);
+
+function updateParallax() {
+    if (!parallaxSections.length || motionMedia.matches) return;
+
+    const viewportHeight = window.innerHeight;
+
+    parallaxSections.forEach(({ el, naturalWidth, naturalHeight }) => {
+        const rect = el.getBoundingClientRect();
+        const boxWidth = rect.width;
+        const boxHeight = rect.height;
+        if (!boxWidth || !boxHeight) return;
+
+        // background-size:coverと同じ考え方で、実際に表示される画像の
+        // 横幅(拡大後)を求める
+        const coverScale = Math.max(boxWidth / naturalWidth, boxHeight / naturalHeight);
+        const renderedWidth = naturalWidth * coverScale;
+
+        // 画像が箱よりどれだけ横にはみ出しているか。その半分までしか
+        // ずらせない(それ以上ずらすと画像の端(=はみ出していない側)が
+        // 見えてしまう)
+        const maxOffset = Math.max((renderedWidth - boxWidth) / 2, 0);
+
+        // 画面の縦中央からどれだけ離れているか(px)を、揺れの元にする
+        const distanceFromCenter = rect.top + boxHeight / 2 - viewportHeight / 2;
+        const speed = 0.05;
+        const offset = Math.max(Math.min(distanceFromCenter * speed, maxOffset), -maxOffset);
+
+        // background-positionのX成分だけを上書きする。
+        // Y成分(top / 50%)は元々のCSS(background-position)のまま生きる
+        el.style.backgroundPositionX = `calc(50% + ${offset}px)`;
+    });
+}
+
+// 星座線の伸び具合とパララックスは、どちらもスクロール位置に依存するので
+// 1つのrequestAnimationFrameにまとめて、スクロール中の負荷を抑える
+let scrollEffectsTicking = false;
+
+function updateScrollEffects() {
+    updateConstellationDraw();
+    updateParallax();
+    scrollEffectsTicking = false;
+}
+
+window.addEventListener('scroll', () => {
+    if (scrollEffectsTicking) return;
+    scrollEffectsTicking = true;
+    requestAnimationFrame(updateScrollEffects);
+});
+
+window.addEventListener('load', updateParallax);
+window.addEventListener('resize', debounce(updateParallax));
+
+
+// MODEL COURSE・TICKET(暗いセクション)で、マウスに柔らかい光が追従する演出。
+// タッチ操作では位置が飛んで不自然になるため、マウスのときだけ反応させる
+if (!motionMedia.matches) {
+    document.querySelectorAll('.cursor-glow').forEach(glow => {
+        const section = glow.closest('section');
+        if (!section) return;
+
+        section.addEventListener('pointermove', (e) => {
+            if (e.pointerType && e.pointerType !== 'mouse') return;
+
+            const rect = section.getBoundingClientRect();
+            const x = ((e.clientX - rect.left) / rect.width) * 100;
+            const y = ((e.clientY - rect.top) / rect.height) * 100;
+
+            glow.style.setProperty('--glow-x', `${x}%`);
+            glow.style.setProperty('--glow-y', `${y}%`);
+            glow.classList.add('is-active');
+        });
+
+        section.addEventListener('pointerleave', () => {
+            glow.classList.remove('is-active');
+        });
+    });
+}
+
+
+// スクロールで見えたらふわっと出す(INTRO・HOW TO ENJOY・MODEL COURSE共通)。
+// 対象には data-reveal 属性を付けてあるだけで、実際の見た目はCSS側で定義している
+const revealTargets = document.querySelectorAll('[data-reveal]');
+
+if (revealTargets.length) {
+    if (motionMedia.matches) {
+        // 動きを減らす設定の人には、最初から見えている状態にする
+        revealTargets.forEach(target => target.classList.add('is-revealed'));
+    } else {
+        const revealObserver = new IntersectionObserver(
+            (entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-revealed');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            },
+            { threshold: 0.2 }
+        );
+
+        revealTargets.forEach(target => revealObserver.observe(target));
+    }
 }
 
 // ハンバーガーメニューの開閉

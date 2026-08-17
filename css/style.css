@@ -3051,6 +3051,138 @@ footer {
    }
 }
 
+/* ========================================
+   スクロールリビール(INTRO・HOW TO ENJOY・MODEL COURSE)
+======================================== */
+
+/* JS側でIntersectionObserverが対象要素を監視し、画面に入ったら
+   is-revealedクラスを付ける。動きを減らす設定の人にはJS側で
+   最初からis-revealedを付けるため、ここでは通常の見た目だけ定義する */
+[data-reveal] {
+   opacity: 0;
+   transform: translateY(28px);
+   transition:
+      opacity 0.9s ease,
+      transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+   will-change: opacity, transform;
+}
+
+[data-reveal].is-revealed {
+   opacity: 1;
+   transform: translateY(0);
+}
+
+/* 写真は本文より少し遅れて追いかけてくるようにする */
+[data-reveal="image"] {
+   transition-delay: 0.15s;
+}
+
+/* 補足の説明文はさらに遅らせて、見出し→写真→本文の順に見せる */
+[data-reveal="text-sub"] {
+   transition-delay: 0.3s;
+}
+
+/* HOW TO ENJOY 03:ドリンク3枚を少しずつずらして出す */
+.how-to-enjoy__box:nth-child(1) {
+   transition-delay: 0.05s;
+}
+
+.how-to-enjoy__box:nth-child(2) {
+   transition-delay: 0.2s;
+}
+
+.how-to-enjoy__box:nth-child(3) {
+   transition-delay: 0.35s;
+}
+
+/* MODEL COURSE:18:30→20:00の4項目を左から順番に出す */
+.model-course__item:nth-child(1) {
+   transition-delay: 0s;
+}
+
+.model-course__item:nth-child(2) {
+   transition-delay: 0.15s;
+}
+
+.model-course__item:nth-child(3) {
+   transition-delay: 0.3s;
+}
+
+.model-course__item:nth-child(4) {
+   transition-delay: 0.45s;
+}
+
+
+/* ========================================
+   星座線・星のアニメーション
+======================================== */
+
+/* 星座の丸(◆代わりの円)を瞬かせる。
+   delayはjs側でJS内蔵の変数(--twinkle-delay)として星ごとに割り振る */
+@keyframes star-twinkle {
+
+   0%,
+   100% {
+      opacity: 0.55;
+      transform: scale(0.85);
+   }
+
+   50% {
+      opacity: 1;
+      transform: scale(1.15);
+   }
+}
+
+.constellation-star {
+   transform-box: fill-box;
+   transform-origin: center;
+   animation: star-twinkle 3.2s ease-in-out infinite;
+   animation-delay: var(--twinkle-delay, 0s);
+}
+
+
+/* ========================================
+   カーソル追従の光(MODEL COURSE・TICKET)
+======================================== */
+
+/* .cursor-glow(position:absolute)は素の状態でも本文より手前に描画されて
+   しまうため、本文側に明示的なz-indexを与えて上に出す。
+   .containerそのものにposition:relativeを付けると、.section-title(position:
+   absoluteで.containerを基準にしていない)の基準がズレて位置が崩れるため、
+   本文の塊(.model-course__content / .ticket__content)だけを個別に浮かせる */
+#model-course .model-course__content {
+   position: relative;
+   z-index: 2;
+}
+
+#ticket .ticket__content {
+   position: relative;
+   z-index: 2;
+}
+
+/* TICKETの見出しだけは.ticket__contentの外にあるので、個別にz-indexを足す。
+   すでにposition:absoluteなので、position値には触れずz-indexだけ足せば良い */
+#ticket .section-title {
+   z-index: 2;
+}
+
+.cursor-glow {
+   position: absolute;
+   inset: 0;
+   z-index: 1;
+   opacity: 0;
+   pointer-events: none;
+   transition: opacity 0.6s ease;
+   background: radial-gradient(circle 260px at var(--glow-x, 50%) var(--glow-y, 50%),
+         rgba(255, 255, 255, 0.12),
+         transparent 70%);
+}
+
+.cursor-glow.is-active {
+   opacity: 1;
+}
+
+
 @media (prefers-reduced-motion: reduce) {
    .how-to-enjoy__eel {
       opacity: 1;
@@ -3073,5 +3205,20 @@ footer {
    /* スクロールの演出も止める */
    html {
       scroll-behavior: auto;
+   }
+
+   /* ここから追加分:新しいアニメーション演出もすべて動きを止める */
+   [data-reveal] {
+      opacity: 1;
+      transform: none;
+      transition: none;
+   }
+
+   .constellation-star {
+      animation: none;
+   }
+
+   .cursor-glow {
+      transition: none;
    }
 }
