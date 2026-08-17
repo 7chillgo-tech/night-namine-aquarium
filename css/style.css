@@ -13,11 +13,8 @@
    /* アクセント(グラデーション) */
    --color-blue-100: #52A1B1;
    --color-blue-200: #63A9B6;
-   /* 300・400は元々9CC5CA/DFE6E1でかなり白っぽく、MODEL COURSE・TICKETの
-      暗い色味と差がありすぎたため、同系色のまま少し暗く・濃くした。
-      グラデーションの位置(background側)は変更していない */
-   --color-blue-300: #6FA3AC;
-   --color-blue-400: #A9C2C5;
+   --color-blue-300: #9CC5CA;
+   --color-blue-400: #DFE6E1;
 
    /* テキスト・アクセント */
    --color-text-body: #252829;
