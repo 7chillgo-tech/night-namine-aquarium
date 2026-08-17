@@ -72,6 +72,16 @@ ol {
 
 }
 
+/* 【保留】2026-08-18
+   .section-title の基準を.containerに移す案を試したが、セクションごとに
+   padding-top(intro/how-to-enjoy=120px, news/access=150px, ticket=flex中央寄せ)
+   が違うため、top:80pxの意味がセクションごとにズレてしまい、
+   INTROでタイトルが本文に重なる形で表面化した。
+   やるなら「.containerをposition:relativeにする」だけでなく、
+   セクションごとにtop値を(80 - そのセクションのpadding-top)へ
+   個別に補正する必要がある。締切が近いため今回は見送り、
+   #intro等のsection-titleは元の「セクション基準」のままにしてある */
+
 #intro,
 #how-to-enjoy,
 #model-course,
@@ -80,6 +90,14 @@ ol {
 #ticket {
    scroll-margin-top: 88px;
 
+}
+
+/* ナビはセクションの先頭ではなく見出し(.section-title)へ直接飛ばす。
+   セクションごとに見出しの位置(absolute の top値)が違うため、
+   セクション側にscroll-margin-topを付けるより、見出し自身に付けたほうが
+   どのセクションでも同じ88px(ヘッダー高さ分)で正しく合う */
+.section-title {
+   scroll-margin-top: 88px;
 }
 
 #constellation-svg {
@@ -168,7 +186,8 @@ ol {
 .news__event-description a:hover {
    color: var(--color-button-hover);
    text-decoration: underline;
-   text-underline-offset: 4px; /* 日本語の文字と下線がくっつかないよう離す */
+   text-underline-offset: 4px;
+   /* 日本語の文字と下線がくっつかないよう離す */
 }
 
 /* ヘッダーのナビは背景が写真だったり明るい面だったりと一定でないため、
@@ -244,53 +263,32 @@ ol {
    z-index: 2;
 }
 
-/* ============================================================
-   【一時的に非表示】2026-08-16
-   星座線と、その通過点の星を全画面幅で隠している。
-   HOW TO ENJOY のレイアウト調整中で、星と線が説明文の上に重なって
-   見えていたため、レイアウトが固まるまで一旦伏せる。
-
-   ★戻すときは、このブロック(下の1つのルール)を削除するだけでよい。
-     スマホ用の非表示指定は @media (max-width:768px) の中に別で
-     残してあるので、消してもスマホの見え方は変わらない。
-
-   ※ display:none にすると getBoundingClientRect() が全て0を返すため、
-     JSが線を左上(0,0)に向かって描いてしまう。
-     だから星だけでなく #constellation-svg も一緒に隠している
-   ============================================================ */
-#constellation-svg,
-#intro .star,
-.star--enjoy01,
-.star--enjoy02,
-.star--enjoy03 {
-   display: none;
-}
-
-/* 星座線の通過点。基準は position:relative の .how-to-enjoy__item。
+/* HOW TO内の通過点。基準は position:relative の .how-to-enjoy__item。
    写真に重ならないよう、背景の余白に置く。
    ここの数値を動かすと線の通り道が変わる */
 .star--enjoy01,
 .star--enjoy02,
 .star--enjoy03 {
-   width: 13px; /* 20pxだと主張が強すぎたので控えめに */
+   width: 13px;
+   opacity: 0.6;
 }
 
-/* 写真は右側。その左の縁のすぐ外に置く */
+/* 01：右側の写真の左端、そのすぐ外 */
 .star--enjoy01 {
    top: 48%;
-   left: 36%;
+   left: 44%;
 }
 
-/* 写真は左側。その右の縁のすぐ外に置く */
+/* 02：左側の写真の右端、そのすぐ外 */
 .star--enjoy02 {
    top: 52%;
-   left: 67%;
+   left: 56%;
 }
 
-/* 3枚並びの左端の外。料金テキストに重ならない高さに */
+/* 03：3枚並びの左端、そのすぐ外 */
 .star--enjoy03 {
    top: 32%;
-   left: 8%;
+   left: 3%;
 }
 
 /* ========================================
@@ -351,10 +349,8 @@ header.is-scrolled .header__logo img {
 }
 
 /* 明るいセクション */
-header.is-scrolled:not(.is-dark)
-.header__nav a.header__ticket,
-header.is-dark
-.header__nav a.header__ticket {
+header.is-scrolled:not(.is-dark) .header__nav a.header__ticket,
+header.is-dark .header__nav a.header__ticket {
    color: var(--color-white);
    background-color: rgba(24, 59, 78, 0.94);
    text-shadow: none;
@@ -536,7 +532,6 @@ header.is-scrolled .header__ticket {
 .fv__event-name {
    display: flex;
    align-items: center;
-   gap: 18px;
    width: 100%;
 
    padding-bottom: 22px;
@@ -588,38 +583,6 @@ header.is-scrolled .header__ticket {
          transparent 42%);
 
    pointer-events: none;
-}
-
-/* 月 */
-
-.fv__moon {
-   position: relative;
-   display: inline-block;
-   flex-shrink: 0;
-   overflow: hidden;
-
-   width: 25px;
-   height: 25px;
-
-   margin-left: 8px;
-
-   background-color: var(--color-white);
-   border-radius: 50%;
-
-   filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.35));
-}
-
-.fv__moon::after {
-   content: "";
-   position: absolute;
-   top: -4px;
-   left: 9px;
-
-   width: 24px;
-   height: 24px;
-
-   background-color: var(--color-navy);
-   border-radius: 50%;
 }
 
 /* INTRO～HOWTO背景 */
@@ -721,12 +684,14 @@ header.is-scrolled .header__ticket {
 }
 
 
+/* INTROの写真右上を星座の始点にする */
 #intro .star {
-   width: 20px;
+   width: 16px;
    position: absolute;
    z-index: 2;
-   top: -20px;
-   right: -10px;
+   top: -10px;
+   right: -8px;
+   opacity: 0.65;
 }
 
 /* ========================================
@@ -768,7 +733,11 @@ header.is-scrolled .header__ticket {
 
 .how-to-enjoy__item--01,
 .how-to-enjoy__item--02 {
-   min-height: 680px;
+   /* 680px固定だと、画像が画面幅によって150〜360px程度まで縮む今の比率
+      (724/391)では中身より箱が大きくなりすぎ、align-items:centerの
+      効果で上下に大きな余白ができていた(901px付近が一番目立つ)。
+      中身の高さに任せるのが安全 */
+   min-height: 0;
 }
 
 .how-to-enjoy__item--01 .how-to-enjoy__content,
@@ -869,15 +838,17 @@ header.is-scrolled .header__ticket {
 
 .how-to-enjoy__image--02 {
    position: relative;
-   z-index: 2; /* 星座線を写真の裏に通す */
+   z-index: 2;
+   /* 星座線を写真の裏に通す */
    grid-area: image;
 
    width: 100%;
 
-   /* 01と同じ理由。中の3枚は 724×406 = 1.783 で、こちらも 16/9 とほぼ同じ。
-      ブロブ型の切り抜きは肩が切れると形が崩れるので、
-      元画像の比率に揃えておくのがいちばん安全 */
-   aspect-ratio: 16 / 9;
+   /* 中の3枚は下方をトリミングして 724×391 = 1.852 になった。
+      枠を16/9(1.778)のままにすると object-fit:cover が高さを基準に
+      拡大し、左右が削れてブロブの肩が切れてしまうため、
+      元画像の実際の比率に揃える */
+   aspect-ratio: 724 / 391;
 
    border-radius: 36px;
    overflow: hidden;
@@ -940,7 +911,8 @@ header.is-scrolled .header__ticket {
 
 .how-to-enjoy__gallery--03 {
    position: absolute;
-   z-index: 2; /* 星座線を写真の裏に通す */
+   z-index: 2;
+   /* 星座線を写真の裏に通す */
    top: 122px;
    left: 5%;
 
@@ -1009,22 +981,23 @@ header.is-scrolled .header__ticket {
    color: var(--color-white);
 
    background-image:
-      linear-gradient(
-         to bottom,
+      linear-gradient(to bottom,
          rgba(2, 22, 39, 0.48) 0%,
-         rgba(2, 22, 39, 0.22) 45%,   /* ここまでは従来どおり写真を見せる */
-         rgba(2, 22, 39, 0.55) 62%,   /* 下半分から沈め始める */
-         rgba(2, 22, 39, 0.80) 80%,   /* 時刻・説明文がこの帯に乗る */
-         rgba(2, 22, 39, 0.85) 100%
-      ),
+         rgba(2, 22, 39, 0.22) 45%,
+         /* ここまでは従来どおり写真を見せる */
+         rgba(2, 22, 39, 0.55) 62%,
+         /* 下半分から沈め始める */
+         rgba(2, 22, 39, 0.80) 80%,
+         /* 時刻・説明文がこの帯に乗る */
+         rgba(2, 22, 39, 0.85) 100%),
       /* 写真の右側(街の灯り・水族館の建物)だけが明るいので横方向にも沈める */
-      linear-gradient(
-         to right,
+      linear-gradient(to right,
          rgba(2, 22, 39, 0) 0%,
-         rgba(2, 22, 39, 0) 45%,    /* 左半分は写真のまま */
-         rgba(2, 22, 39, 0.25) 75%, /* 4項目目の文字がこのあたり */
-         rgba(2, 22, 39, 0.5) 100%
-      ),
+         rgba(2, 22, 39, 0) 45%,
+         /* 左半分は写真のまま */
+         rgba(2, 22, 39, 0.25) 75%,
+         /* 4項目目の文字がこのあたり */
+         rgba(2, 22, 39, 0.5) 100%),
       url(../images/modelcourse.jpg);
 
    background-repeat: no-repeat;
@@ -1054,7 +1027,8 @@ header.is-scrolled .header__ticket {
 }
 
 .model-course__list {
-   position: relative; /* タイムライン線(::before)の基準位置 */
+   position: relative;
+   /* タイムライン線(::before)の基準位置 */
    display: grid;
    grid-template-columns: repeat(4, 1fr);
    gap: 40px;
@@ -1071,13 +1045,11 @@ header.is-scrolled .header__ticket {
    left: 0;
    right: 0;
    height: 1px;
-   background: linear-gradient(
-      to right,
-      rgba(255, 255, 255, 0) 0%,
-      rgba(255, 255, 255, 0.25) 14%,
-      rgba(255, 255, 255, 0.25) 86%,
-      rgba(255, 255, 255, 0) 100%
-   );
+   background: linear-gradient(to right,
+         rgba(255, 255, 255, 0) 0%,
+         rgba(255, 255, 255, 0.25) 14%,
+         rgba(255, 255, 255, 0.25) 86%,
+         rgba(255, 255, 255, 0) 100%);
    z-index: 0;
 }
 
@@ -1085,22 +1057,27 @@ header.is-scrolled .header__ticket {
 .model-course__list::after {
    content: "";
    position: absolute;
-   top: 175px; /* アイコン下端150pxと時刻上端200pxの中間。上下25pxずつ空ける */
-   left: calc((100% - 120px) / 8);  /* 120px = gap40px×3 */
+   top: 175px;
+   /* アイコン下端150pxと時刻上端200pxの中間。上下25pxずつ空ける */
+   left: calc((100% - 120px) / 8);
+   /* 120px = gap40px×3 */
    right: calc((100% - 120px) / 8);
    height: 1px;
    background-color: var(--color-gold);
    opacity: 0.6;
-   z-index: 0; /* 丸より背面に */
+   z-index: 0;
+   /* 丸より背面に */
 }
 
 .model-course__item {
-   position: relative; /* 丸(::before)の基準位置 */
+   position: relative;
+   /* 丸(::before)の基準位置 */
    z-index: 1;
    display: flex;
    flex-direction: column;
    align-items: center;
-   gap: 14px; /* 時刻↔説明文の間隔。仲間同士を近づけて1つの塊に見せる */
+   gap: 14px;
+   /* 時刻↔説明文の間隔。仲間同士を近づけて1つの塊に見せる */
    min-height: 320px;
 }
 
@@ -1108,13 +1085,16 @@ header.is-scrolled .header__ticket {
 .model-course__item::before {
    content: "";
    position: absolute;
-   top: 175px; /* 線と同じ高さ */
+   top: 175px;
+   /* 線と同じ高さ */
    left: 50%;
-   transform: translate(-50%, -50%); /* 丸の中心を線に合わせる */
+   transform: translate(-50%, -50%);
+   /* 丸の中心を線に合わせる */
    width: 10px;
    height: 10px;
    border-radius: 50%;
-   background-color: var(--color-gold); /* = #C3A364 */
+   background-color: var(--color-gold);
+   /* = #C3A364 */
 }
 
 /* 1項目目だけにある囲みdiv。2〜4項目目と同じ間隔・中央揃えに合わせる */
@@ -1122,7 +1102,8 @@ header.is-scrolled .header__ticket {
    display: flex;
    flex-direction: column;
    align-items: center;
-   gap: 14px; /* 2〜4項目目と同じ間隔に揃える */
+   gap: 14px;
+   /* 2〜4項目目と同じ間隔に揃える */
    width: 100%;
 }
 
@@ -1142,7 +1123,8 @@ header.is-scrolled .header__ticket {
    font-size: 25px;
    display: flex;
    gap: 15px;
-   letter-spacing: 0.1em; /* FVの時刻表示(0.12em)に近い字間を持たせる */
+   letter-spacing: 0.1em;
+   /* FVの時刻表示(0.12em)に近い字間を持たせる */
 }
 
 .model-course__description {
@@ -1155,8 +1137,10 @@ header.is-scrolled .header__ticket {
 .model-course__time,
 .model-course__description {
    text-shadow:
-      0 1px 3px rgba(2, 22, 39, 0.95),   /* 輪郭を締める近距離の影 */
-      0 2px 14px rgba(2, 22, 39, 0.85);  /* 広く沈める遠距離の影 */
+      0 1px 3px rgba(2, 22, 39, 0.95),
+      /* 輪郭を締める近距離の影 */
+      0 2px 14px rgba(2, 22, 39, 0.85);
+   /* 広く沈める遠距離の影 */
 }
 
 
@@ -1199,7 +1183,8 @@ header.is-scrolled .header__ticket {
    align-items: flex-start;
    justify-content: center;
    gap: 150px;
-   padding-bottom: 80px; /* 残りの余白はボタン側で確保する */
+   padding-bottom: 80px;
+   /* 残りの余白はボタン側で確保する */
 }
 
 /* .button は inline-flex なので、親をflexにして中央寄せする */
@@ -1222,7 +1207,8 @@ header.is-scrolled .header__ticket {
 .news__event {
    width: 400px;
    text-align: center;
-   padding-top: 50px; /* 右列の見出し下線と画像の上端を揃える */
+   padding-top: 50px;
+   /* 右列の見出し下線と画像の上端を揃える */
 }
 
 .news__event-image {
@@ -1233,7 +1219,8 @@ header.is-scrolled .header__ticket {
 /* 日付と説明文を画像の中央に置く。
    NEW は下で位置指定して幅の計算から外すので、中央寄せに影響しない */
 .news__event-text {
-   position: relative; /* NEW の位置の基準 */
+   position: relative;
+   /* NEW の位置の基準 */
    width: fit-content;
    margin: 20px auto 0;
 }
@@ -1248,9 +1235,12 @@ header.is-scrolled .header__ticket {
 /* まとまりの左端の、さらに外側に出す */
 .news__event-new {
    position: absolute;
-   right: 100%; /* 右端を親の左端に合わせる */
-   margin-right: 16px; /* 日付との間隔 */
-   color: var(--color-gold); /* = #C3A364 */
+   right: 100%;
+   /* 右端を親の左端に合わせる */
+   margin-right: 16px;
+   /* 日付との間隔 */
+   color: var(--color-gold);
+   /* = #C3A364 */
    font-weight: 700;
 }
 
@@ -1316,8 +1306,10 @@ header.is-scrolled .header__ticket {
    width: 15px;
 }
 
+/* cream→#B6C7D2 は振れ幅が大きく、intro〜how-to-enjoyと同じく
+   切り替わりが目立っていたため、隣り合う blue-400〜blue-300 に絞った */
 .news-access-bg {
-   background: linear-gradient(to bottom, var(--color-cream) 0%, #B6C7D2 100%);
+   background: linear-gradient(to bottom, var(--color-blue-400) 0%, var(--color-blue-300) 100%);
 }
 
 
@@ -1335,7 +1327,8 @@ header.is-scrolled .header__ticket {
 .access__map-wrap {
    border-radius: 20px;
    overflow: hidden;
-   line-height: 0; /* iframe下に出る隙間を消す */
+   line-height: 0;
+   /* iframe下に出る隙間を消す */
 }
 
 #access iframe {
@@ -1349,8 +1342,10 @@ header.is-scrolled .header__ticket {
 .access__cards {
    display: grid;
    grid-template-columns: repeat(2, 1fr);
-   gap: 60px 40px; /* 見出し追加で背が伸びたぶん、行間を広めに */
-   padding: 100px 0 100px 0; /* 地図との間隔を他セクションのリズムに合わせる */
+   gap: 60px 40px;
+   /* 見出し追加で背が伸びたぶん、行間を広めに */
+   padding: 100px 0 100px 0;
+   /* 地図との間隔を他セクションのリズムに合わせる */
 
    /* 1200px幅だと1列580pxになり、本文290pxに対して余白が空きすぎるため絞る */
    width: min(860px, 100%);
@@ -1380,7 +1375,8 @@ header.is-scrolled .header__ticket {
 
 /* カードの1行目を見出しとして立たせる */
 .access__label {
-   font-size: 17px; /* 18pxだと本文に対して主張が強すぎた */
+   font-size: 17px;
+   /* 18pxだと本文に対して主張が強すぎた */
    font-weight: 500;
    letter-spacing: 0.05em;
    margin-bottom: 10px;
@@ -1396,7 +1392,8 @@ header.is-scrolled .header__ticket {
 
 .access__description {
    text-align: center;
-   letter-spacing: 0.05em; /* 他セクションと字間を揃える */
+   letter-spacing: 0.05em;
+   /* 他セクションと字間を揃える */
 }
 
 /* もとは <br> で改行していた補足の一文。
@@ -1525,7 +1522,8 @@ footer {
 .footer__sns-nav ul {
    display: flex;
    gap: 32px;
-   margin-top: 20px; /* 元は li の padding-top。箱の計算を素直にするため親へ移動 */
+   margin-top: 20px;
+   /* 元は li の padding-top。箱の計算を素直にするため親へ移動 */
 }
 
 /* 48pxは大きすぎ、32pxは小さすぎたので中間の40pxに */
@@ -1552,7 +1550,8 @@ footer {
 }
 
 .footer__sns-img a:hover {
-   transform: translateY(-3px); /* ボタンと同じ「少し浮く」動きに揃える */
+   transform: translateY(-3px);
+   /* ボタンと同じ「少し浮く」動きに揃える */
    opacity: 0.75;
 }
 
@@ -1576,7 +1575,8 @@ footer {
    display: flex;
    align-items: center;
    min-height: 320px;
-   padding-top: 88px; /* 固定ヘッダーの高さ分 */
+   padding-top: 88px;
+   /* 固定ヘッダーの高さ分 */
 
    background-color: var(--color-navy);
    color: var(--color-white);
@@ -1630,6 +1630,53 @@ footer {
 ======================================== */
 
 @media (max-width: 1200px) {
+
+   /* 800pxはPCフル幅(1200px前後)向けの半径。1024px前後だと円が画面幅に対して
+      大きすぎ、色の薄まる78%〜100%が画面外に出て中心の濃い色だけが目立つのは
+      スマホと同じ現象。ここは768pxのようにグラデ自体を変えるのではなく、
+      円のまま半径だけ600pxに縮める */
+   .intro-how-to-bg {
+      background:
+         radial-gradient(circle 600px at 40% 15%,
+            var(--color-blue-100) 0%,
+            var(--color-blue-200) 15%,
+            var(--color-blue-300) 44%,
+            var(--color-blue-400) 78%,
+            transparent 100%),
+
+         radial-gradient(circle 600px at 55% 50%,
+            var(--color-blue-100) 0%,
+            var(--color-blue-200) 15%,
+            var(--color-blue-300) 44%,
+            var(--color-blue-400) 78%,
+            transparent 100%),
+
+         radial-gradient(circle 600px at 45% 85%,
+            var(--color-blue-100) 0%,
+            var(--color-blue-200) 15%,
+            var(--color-blue-300) 44%,
+            var(--color-blue-400) 78%,
+            transparent 100%),
+
+         var(--color-cream);
+   }
+
+   /* 星座線・通過点の星は、フル幅PC(1201px以上)だけで見せる。
+      1200px以下は幅が狭くなるにつれ線・星が窮屈に詰まって見えるため、
+      このブロックでまとめて隠す(以前は768pxだけで隠していたが、
+      1201px未満は全部同じ理由で隠したいので範囲をここまで広げた)。
+      display:none にすると getBoundingClientRect() が全て0を返すため、
+      JSが線を左上(0,0)に向かって描いてしまう。だから星だけでなく
+      #constellation-svg も一緒に隠す。
+      .star をまとめて消すと、NEWS見出しの装飾星(.star--event / .star--info)まで
+      消えてしまうので、対象は「線の通過点」の星だけに絞る */
+   #constellation-svg,
+   #intro .star,
+   .star--enjoy01,
+   .star--enjoy02,
+   .star--enjoy03 {
+      display: none;
+   }
 
    header {
       padding: 0 20px;
@@ -1697,6 +1744,19 @@ footer {
       margin-top: 16px;
    }
 
+   /* メニューを開いた時のTICKETが、パネルの背景(rgba(24,59,78,0.96))と
+      ボタン既定の背景(rgba(24,59,78,0.72))がほぼ同じ色で埋もれて見えていた。
+      .header__ticket:hover と同じ「クリーム地に紺文字」を、開いている間の
+      既定の見た目として使う。is-scrolled等と同時に有効になっても負けないよう、
+      それらの上書きルールより詳細度を上げてある */
+   header.is-menu-open .header__nav a.header__ticket,
+   header.is-menu-open.is-scrolled .header__nav a.header__ticket {
+      color: var(--color-navy);
+      background-color: var(--color-cream);
+      border-color: var(--color-cream);
+      text-shadow: none;
+   }
+
    /* 開いている間は×印にする */
    header.is-menu-open .header__menu-button span:nth-child(1) {
       transform: translateY(7px) rotate(45deg);
@@ -1748,63 +1808,59 @@ footer {
       background-color: var(--color-white);
    }
 
-/* ========================================
+   /* ========================================
    FV：小さいPC
 ======================================== */
 
-.fv__message {
-  left: 5%;
-}
+   .fv__message {
+      left: 5%;
+   }
 
-.fv__title {
-  font-size: clamp(44px, 5vw, 54px);
-}
+   .fv__title {
+      font-size: clamp(44px, 5vw, 54px);
+   }
 
-.fv__event {
-   top: 50.5%;
-   right: 2%;
-   width: 38%;
-   min-width: 0;
-}
+   .fv__event {
+      top: 50.5%;
+      right: 2%;
+      width: 38%;
+      min-width: 0;
+   }
 
-.fv__event-name {
-  gap: 12px;
-}
-
-/* ========================================
+   /* ========================================
    INTRO：小さいPC
 ======================================== */
 
-#intro .container {
-   gap: 40px;
-}
+   #intro .container {
+      gap: 40px;
+   }
 
-#intro .section-title {
-   left: 40px;
-}
+   #intro .section-title {
+      left: 40px;
+   }
 
-.intro__content {
-   margin-left: 40px;
-}
+   .intro__content {
+      margin-left: 40px;
+   }
 
-.intro__title {
-   font-size: 36px;
-}
+   .intro__title {
+      font-size: 36px;
+   }
 
-.intro__image {
-   max-width: 420px;
-}
+   .intro__image {
+      max-width: 420px;
+   }
 
-/* ========================================
+   /* ========================================
    HOW TO ENJOY：小さいPC
 ======================================== */
 
-.how-to-enjoy__content {
-   width: 100%;
-   height: 700px;
-}
+   .how-to-enjoy__content {
+      width: 100%;
+      height: 700px;
+   }
 
-/* 01・02の説明文について:
+   /* 01・02の説明文について:
    もともと position:absolute で座標を直打ちしていた頃の名残で、
    ここに left / top / width % が残っていた。
    その後 01・02 は CSS Grid に作り替えて position:static になったので、
@@ -1812,7 +1868,7 @@ footer {
    380pxのグリッド列 × 55% − padding-left 66px = 文字幅143px まで潰れていた。
    グリッドの列幅に任せるのが正しいので、指定ごと削除する */
 
-/* 01・02の写真について:
+   /* 01・02の写真について:
    ここには left / top / width% / height が並んでいたが、全て削除した。
 
    ・left / top … Grid に作り替えた時点で効かなくなっていた名残
@@ -1823,186 +1879,196 @@ footer {
 
    → 幅も高さも指定しないのが正解。基本側の指定がそのまま効く */
 
-/* 03 */
-.how-to-enjoy__gallery--03 {
-   left: 0;
-   width: 100%;
-   gap: 20px;
-}
+   /* 03 */
+   .how-to-enjoy__gallery--03 {
+      left: 0;
+      width: 100%;
+      gap: 20px;
+   }
 
-.how-to-enjoy__box {
-   width: calc((100% - 40px) / 3);
-}
+   .how-to-enjoy__box {
+      width: calc((100% - 40px) / 3);
+   }
 
-.how-to-enjoy__image--03 {
-   width: 100%;
-   height: auto;
-}
+   .how-to-enjoy__image--03 {
+      width: 100%;
+      height: auto;
+   }
 
-.how-to-enjoy__image--03 img {
-   width: 100%;
-   height: auto;
-   object-fit: contain;
-}
+   .how-to-enjoy__image--03 img {
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+   }
 
-.how-to-enjoy__description--03 {
-   left: 38%;
-   width: 55%;
-}
+   .how-to-enjoy__description--03 {
+      left: 38%;
+      width: 55%;
+   }
 
-/* ========================================
+   /* ========================================
    MODEL COURSE：小さいPC
 ======================================== */
 
-/* 3列の構成は基本CSSのまま。この幅では列の間だけ詰める */
-.model-course__header {
-   gap: 24px;
-}
+   /* 3列の構成は基本CSSのまま。この幅では列の間だけ詰める */
+   .model-course__header {
+      gap: 24px;
+   }
 
-#model-course .section-title {
-   font-size: 20px;
-}
+   #model-course .section-title {
+      font-size: 20px;
+   }
 
-.model-course__title {
-   font-size: 18px;
-}
+   .model-course__title {
+      font-size: 18px;
+   }
 
-#model-course .button {
-   gap: 18px;
-   font-size: 14px;
-}
+   #model-course .button {
+      gap: 18px;
+      font-size: 14px;
+   }
 
-/* 4項目を画面幅の中で4等分 */
-.model-course__list {
-   display: grid;
-   grid-template-columns: repeat(4, 1fr);
-   gap: 24px;
+   /* 4項目を画面幅の中で4等分 */
+   .model-course__list {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
 
-   width: 100%;
-   margin-top: 120px;
-}
+      width: 100%;
+      margin-top: 120px;
+   }
 
-.model-course__item {
-   gap: 12px; /* 時刻↔説明文 */
-   min-width: 0;
-}
+   .model-course__item {
+      gap: 12px;
+      /* 時刻↔説明文 */
+      min-width: 0;
+   }
 
-.model-course__icon {
-   width: 110px;
-   height: 110px;
+   .model-course__icon {
+      width: 110px;
+      height: 110px;
 
-   /* アイコンと時刻の間だけ広く(26px + gap12px = 38px) */
-   margin-bottom: 26px;
-}
+      /* アイコンと時刻の間だけ広く(26px + gap12px = 38px) */
+      margin-bottom: 26px;
+   }
 
-.model-course__time {
-   font-size: 22px;
-}
+   .model-course__time {
+      font-size: 22px;
+   }
 
-.model-course__description {
-   width: 100%;
-   font-size: 16px;
-   padding-bottom: 140px;
-}
+   .model-course__description {
+      width: 100%;
+      font-size: 16px;
+      padding-bottom: 140px;
+   }
 
-/* タイムライン線・丸の位置を小さいPC用に再計算 */
-.model-course__list::before,
-.model-course__list::after {
-   top: 129px; /* アイコン下端110pxと時刻上端148pxの中間 */
-}
+   /* タイムライン線・丸の位置を小さいPC用に再計算 */
+   .model-course__list::before,
+   .model-course__list::after {
+      top: 129px;
+      /* アイコン下端110pxと時刻上端148pxの中間 */
+   }
 
-.model-course__list::after {
-   left: calc((100% - 72px) / 8);  /* 72px = gap24px×3 */
-   right: calc((100% - 72px) / 8);
-}
+   .model-course__list::after {
+      left: calc((100% - 72px) / 8);
+      /* 72px = gap24px×3 */
+      right: calc((100% - 72px) / 8);
+   }
 
-.model-course__item::before {
-   top: 129px; /* 線と同じ高さ */
-   width: 8px;
-   height: 8px;
-}
+   .model-course__item::before {
+      top: 129px;
+      /* 線と同じ高さ */
+      width: 8px;
+      height: 8px;
+   }
 
-.model-course__text {
-   gap: 12px; /* この幅では .model-course__item の gap が 12px のため */
-}
+   .model-course__text {
+      gap: 12px;
+      /* この幅では .model-course__item の gap が 12px のため */
+   }
 
-/* ========================================
+   /* ========================================
    NEWS：小さいPC
 ======================================== */
-.news__content {
-   width: min(860px, 100%);
-   margin-inline: auto;
-   padding-inline: 20px;
+   .news__content {
+      width: min(860px, 100%);
+      margin-inline: auto;
+      padding-inline: 20px;
 
-   justify-content: space-between;
-   gap: 40px;
-}
+      justify-content: space-between;
+      gap: 40px;
+   }
 
-.news__event {
-   width: 380px;
-   padding-top: 24px; /* 右列の見出し下線と画像の上端を揃える */
-}
+   .news__event {
+      width: 380px;
+      padding-top: 24px;
+      /* 右列の見出し下線と画像の上端を揃える */
+   }
 
-.news__info-column .news__heading {
-   padding-bottom: 24px;
-}
+   .news__info-column .news__heading {
+      padding-bottom: 24px;
+   }
 
-.news__info-column {
-   width: 380px;
-}
+   .news__info-column {
+      width: 380px;
+   }
 
-.news__info {
-   width: 100%;
-}
+   .news__info {
+      width: 100%;
+   }
 
-.news__item {
-   display: grid;
-   /* 220px固定だと、お知らせ一覧(news.html)の長いタイトル
+   .news__item {
+      display: grid;
+      /* 220px固定だと、お知らせ一覧(news.html)の長いタイトル
       「夏季夜間営業の開催が決まりました」などが入りきらず2行に折れていた。
-      minmax にすると「短い行は220pxを保ったまま、長い行だけ必要な分だけ伸びる」。
-      justify-content:center はそのまま効くので、中央寄せの見え方は変わらない */
-   grid-template-columns: 50px minmax(220px, auto);
-   grid-template-rows: auto auto;
+      minmax(220px, auto) + justify-content:center にすると今度は逆に、
+      行ごとに文章の長さが違うぶん中央寄せの中身の幅が変わり、
+      アイコンの位置が行ごとに左右へばらついて縦一列に揃わなくなる
+      (768px用のルールで先に見つけて直した不具合と同じもの)。
+      1fr にすれば残り幅いっぱいまで伸びるので、220pxの2行折れも
+      アイコンのばらつきもどちらも起きない */
+      grid-template-columns: 50px 1fr;
+      grid-template-rows: auto auto;
 
-   justify-content: center;
-   column-gap: 20px;
-   row-gap: 2px;
-   align-items: center;
+      column-gap: 20px;
+      row-gap: 2px;
+      align-items: center;
 
-   padding: 18px 0;
-}
+      padding: 18px 0;
+   }
 
-.news__icon {
-   grid-column: 1;
-   grid-row: 1 / 3;
-}
+   .news__icon {
+      grid-column: 1;
+      grid-row: 1 / 3;
+   }
 
-.news__date {
-   grid-column: 2;
-   grid-row: 1;
-   font-size: 13px;
-}
+   .news__date {
+      grid-column: 2;
+      grid-row: 1;
+      font-size: 13px;
+   }
 
-.news__description {
-   grid-column: 2;
-   grid-row: 2;
-   font-size: 16px;
-}
+   .news__description {
+      grid-column: 2;
+      grid-row: 2;
+      font-size: 16px;
+   }
 
-/* ========================================
+   /* ========================================
    ACCESS：小さいPC
 ======================================== */
 
-#access iframe {
-   display: block;
-   width: 100%;
-   height: 400px;
-}
+   #access iframe {
+      display: block;
+      width: 100%;
+      height: 400px;
+   }
 
-.access__cards {
-   gap: 60px; /* 見出し追加で背が伸びたため、行間は基本側と同じ60pxに */
-   padding: 80px 20px 100px;
-}
+   .access__cards {
+      gap: 60px;
+      /* 見出し追加で背が伸びたため、行間は基本側と同じ60pxに */
+      padding: 80px 20px 100px;
+   }
 
 }
 
@@ -2032,8 +2098,13 @@ footer {
    }
 
    /* 1200pxブロックで height:700px の直値が入っているので、
-      縦積みで中身が伸びた分を高さに追従させる */
-   .how-to-enjoy__content {
+      縦積みで中身が伸びた分を高さに追従させる。
+      03は縦積みにしない(display:blockにしていない)ので対象外にする。
+      ここが01・02と一緒くたに全項目へ効いていたため、03の
+      .how-to-enjoy__content が height:auto で潰れ、中の絶対配置(gallery/description)
+      が本来の位置からズレて画面外に消えていた */
+   .how-to-enjoy__item--01 .how-to-enjoy__content,
+   .how-to-enjoy__item--02 .how-to-enjoy__content {
       height: auto;
    }
 
@@ -2058,6 +2129,50 @@ footer {
 
 @media (max-width: 768px) {
 
+   /* circle 800pxはPC(横幅1200px前後)向けの半径で、丸いブルームが
+      3つ並ぶ見た目だった。スマホでは円ベースの見た目自体をやめて、
+      #news→#access(.news-access-bg)と同じ「上から下」の直線グラデーションにする。
+
+      .intro-how-to-bg(#intro〜#how-to-enjoyをまとめて包む枠)1枚に
+      グラデーションを1回だけ流すと、#how-to-enjoyが長いぶんその大部分が
+      薄いクリームで埋まってしまう。#intro・#how-to-enjoyそれぞれに
+      個別でグラデーションを持たせ、#how-to-enjoyの頭でまた
+      blue-100から始まるようにして、2つ分の「波」として繋げる。
+
+      #how-to-enjoyは向きを反転(to top)させ、#introの底と#how-to-enjoyの頭が
+      同じ色で揃うようにして、境目で色が折り返さず自然に繋がるようにする。
+
+      色の振れ幅は blue-300〜blue-400 の隣り合う2色だけに絞る。
+      (以前は blue-100〜blue-400 で振れ幅が大きく、明暗の切り替わりが
+      目立っていた。「切り替わったと分からないくらい」の変化量にするため、
+      パレットの中でいちばん近い2色だけを使う) */
+   .intro-how-to-bg {
+      background: none;
+   }
+
+   #intro {
+      background: linear-gradient(to bottom,
+            var(--color-blue-300) 0%,
+            var(--color-blue-400) 100%);
+   }
+
+   #how-to-enjoy {
+      background: linear-gradient(to top,
+            var(--color-blue-300) 0%,
+            var(--color-blue-400) 100%);
+   }
+
+   /* スマホ列の幅。以前は 260px 固定で、iPhone 15 Pro Max(430px)のような
+      横幅の広い端末でも画面の6割程度しか使えていなかった。
+      clamp(最小, 基準, 最大)で画面幅の68%を基準にしつつ、
+      小さい端末では260px相当を下限に、大きい端末でも340pxで頭打ちにする。
+      この値は目安なので、実機で見て気になったらここだけ直せば
+      .mobile-cta__button・.how-to-enjoy__gallery--03・.footer__content>* の
+      4箇所すべてに反映される */
+   :root {
+      --sp-col: clamp(260px, 68vw, 340px);
+   }
+
    /* 左右の余白を20px→28pxへ。参考サイト(apple-q.jp)と同じ値。
       端に文字が寄らなくなり、1行の折り返し位置も安定して読みやすくなる。
       ※画面端まで広げている地図とドリンクの横スワイプは、
@@ -2065,11 +2180,11 @@ footer {
    .container {
       width: calc(100% - 56px);
 
-      /* フッターで使っている260pxの列を、FV以外の全セクションに広げる。
+      /* フッターで使っている列を、FV以外の全セクションに広げる。
          ページ全体が縦一本の細い列として読めるようになる。
          .container は margin:0 auto なので、上限を付けるだけで中央に寄る。
-         画面が260px+56pxより狭い端末では width 側が勝つので潰れない */
-      max-width: 260px;
+         画面が --sp-col + 56px より狭い端末では width 側が勝つので潰れない */
+      max-width: var(--sp-col);
    }
 
    /* ---- セクションタイトル ----
@@ -2152,7 +2267,8 @@ footer {
    .fv__event {
       position: static;
       margin: 0;
-      padding-top: 48px; /* キャッチコピーとの間隔 */
+      padding-top: 48px;
+      /* キャッチコピーとの間隔 */
 
       /* 基本指定の min-width:480px を必ず打ち消す。
          残すと375px幅の端末で横スクロールが出る */
@@ -2179,7 +2295,8 @@ footer {
       left: 0;
       right: 0;
       bottom: 0;
-      z-index: 90; /* ヘッダー(100)より下、他の要素より上 */
+      z-index: 90;
+      /* ヘッダー(100)より下、他の要素より上 */
 
       padding: 12px 28px calc(12px + env(safe-area-inset-bottom));
 
@@ -2209,8 +2326,8 @@ footer {
       align-items: center;
       justify-content: center;
 
-      /* 他のセクションと同じ260pxの列に合わせる */
-      max-width: 260px;
+      /* 他のセクションと同じ列幅(--sp-col)に合わせる */
+      max-width: var(--sp-col);
       margin-inline: auto;
 
       padding: 14px;
@@ -2305,7 +2422,8 @@ footer {
    }
 
    .intro__content .button {
-      order: 1; /* order 0 のまま残る写真より後ろへ */
+      order: 1;
+      /* order 0 のまま残る写真より後ろへ */
       align-self: center;
       margin-top: 40px;
    }
@@ -2389,21 +2507,16 @@ footer {
       親を static にすると写真が親から外れて飛び出す。
       relative のまま left だけ打ち消す。
 
-      枠が元画像(724×406 = 比1.78)より縦長だと、object-fit:cover が
-      高さを埋めるために左右を削り、ブロブ型のシルエットの肩が切れてしまう。
-      逆に元画像より横長の 2:1 にすれば、幅は削られず下だけが切れる。
-      下が切れるのは img 側の object-position: center top のはたらき。
-
-      ※PC側は 16/9(元画像とほぼ同じ)にしたので切り取りがほぼ無い。
-        スマホだけ 2:1 で下が少し切れる状態。揃えるならここも 16/9 にできるが、
-        01・02とも同じ比率・同じ幅なので高さは自動で揃う */
+      中の3枚は下方をトリミング済みで 724×391 = 1.852。
+      PC側と同じく元画像の実際の比率に揃えて、object-fit:cover による
+      左右・上下の切り取りが起きないようにする */
    .how-to-enjoy__image--02 {
       position: relative;
       left: auto;
       top: auto;
       width: 100%;
       height: auto;
-      aspect-ratio: 2 / 1;
+      aspect-ratio: 724 / 391;
       border-radius: 24px;
    }
 
@@ -2415,22 +2528,24 @@ footer {
       margin-top: 24px;
 
       /* カードが画面の端で切れることで「横に続いている」と一目で伝わる。
-         コンテナが260pxに変わっても追従するよう、固定pxではなく画面幅を基準にする。
-         50% は親の幅の半分、50vw は画面の半分なので、その差だけ左右へはみ出せば
-         ちょうど画面の端に届く。padding は同じ量を逆向きに戻して中身の開始位置を保つ。
+         コンテナが可変幅(--sp-col)になっても追従するよう、固定pxではなく
+         画面幅を基準にする。50% は親の幅の半分、50vw は画面の半分なので、
+         その差だけ左右へはみ出せばちょうど画面の端に届く。padding は
+         同じ量を逆向きに戻して中身の開始位置を保つ。
          地図(.access__map-wrap)と同じ手法 */
       width: 100vw;
       margin-inline: calc(50% - 50vw);
-      padding-inline: calc(50vw - 130px); /* 130px = 260pxの列の半分 */
+      padding-inline: calc(50vw - (var(--sp-col) / 2));
 
       overflow-x: auto;
-      scroll-snap-type: x mandatory; /* カードがぴたっと止まる */
+      scroll-snap-type: x mandatory;
+      /* カードがぴたっと止まる */
 
       /* これが無いと、スナップが1枚目を「スクロール領域の左端」に合わせようとして
          読み込み時に padding のぶん(120px)だけ勝手にスクロールし、
          カードが画面の左端に張り付いてしまう。
          スナップ位置にも同じ余白があることを伝えて止める */
-      scroll-padding-inline: calc(50vw - 130px);
+      scroll-padding-inline: calc(50vw - (var(--sp-col) / 2));
 
       padding-bottom: 8px;
    }
@@ -2482,17 +2597,8 @@ footer {
       display: inline;
    }
 
-   /* 星座線はスマホでは幅が狭く、線が窮屈になるため隠す。
-      隠すのは「線の通過点」の星だけにする。
-      .star をまとめて消すと、NEWS見出しの装飾星(.star--event / .star--info)まで
-      消えてしまう。あちらは position:static で見せるための星なので残す */
-   #constellation-svg,
-   #intro .star,
-   .star--enjoy01,
-   .star--enjoy02,
-   .star--enjoy03 {
-      display: none;
-   }
+   /* 星座線・通過点の星の表示/非表示は、@media (max-width: 1200px) に
+      まとめてあるので、ここでは何もしない(768pxもこの範囲に含まれる) */
 
    /* ---- MODEL COURSE ---- */
    /* ボタンがセクションの下端に貼り付いて窮屈だったので、下に逃げを作る */
@@ -2535,7 +2641,8 @@ footer {
    /* section-title と同じ理由で、1200px用の #model-course .button が
       スマホ用の .button に勝ってしまうため、ここでも指定し直す */
    #model-course .button {
-      order: 1; /* order 0 のまま残るタイムラインより後ろへ */
+      order: 1;
+      /* order 0 のまま残るタイムラインより後ろへ */
       align-self: center;
       margin-top: 48px;
       gap: 20px;
@@ -2550,7 +2657,8 @@ footer {
    .model-course__list {
       display: block;
       margin-top: 48px;
-      padding-left: 40px; /* 左端に線と丸を通す余白 */
+      padding-left: 40px;
+      /* 左端に線と丸を通す余白 */
    }
 
    /* 縦に貫くゴールドの線。最初と最後の丸の中心を結ぶ */
@@ -2585,7 +2693,7 @@ footer {
       padding: 22px 0;
    }
 
-   .model-course__item + .model-course__item {
+   .model-course__item+.model-course__item {
       margin-top: 14px;
    }
 
@@ -2829,10 +2937,10 @@ footer {
       text-align: center;
    }
 
-   .footer__content > *,
+   .footer__content>*,
    .footer__copyright {
       width: 100%;
-      max-width: 260px;
+      max-width: var(--sp-col);
       margin-inline: auto;
    }
 
