@@ -264,31 +264,66 @@ ol {
 }
 
 /* HOW TO内の通過点。基準は position:relative の .how-to-enjoy__item。
-   写真に重ならないよう、背景の余白に置く。
+   テキスト列の外側(=1200px列の外の余白)まで振ることで、線がジグザグに
+   大きく寄り道するようにしている。0%を切る/100%を超えるのは想定通り
+   (写真・テキストが無い、背景だけの余白に出ている)。
    ここの数値を動かすと線の通り道が変わる */
 .star--enjoy01,
 .star--enjoy02,
-.star--enjoy03 {
+.star--enjoy03,
+.star--enjoy04 {
    width: 13px;
    opacity: 0.6;
 }
 
-/* 01：右側の写真の左端、そのすぐ外 */
+/* 01：テキスト列(0〜約38%)の左端、そのすぐ外 */
 .star--enjoy01 {
    top: 48%;
-   left: 44%;
+   left: -2%;
 }
 
-/* 02：左側の写真の右端、そのすぐ外 */
+/* 02：テキスト列(約62〜100%)の右端、そのすぐ外 */
 .star--enjoy02 {
    top: 52%;
-   left: 56%;
+   left: 102%;
 }
 
-/* 03：3枚並びの左端、そのすぐ外 */
+/* 03：見出し「03」の左端、そのすぐ外(01と同じ側に振る) */
 .star--enjoy03 {
    top: 32%;
-   left: 3%;
+   left: -2%;
+}
+
+/* 04：「ほっとひと息。」の右下、空いているスペースの真ん中あたり */
+.star--enjoy04 {
+   top: 90%;
+   left: 88%;
+}
+
+/* 見えない通過点。アイコンは出さず、線の形を整えるためだけに座標を使う。
+   display:none にすると座標が全部0になってしまうため、必ずopacity:0にする */
+.star--fv-anchor,
+.star--model-course-anchor {
+   width: 13px;
+   opacity: 0;
+}
+
+/* FV：境目より少し手前。ちょうど境目(100%)だと線の出だしとの間に
+   隙間が空いて見えたため、わずかにFV側へ戻す。
+   introの星とはできるだけ離して(左寄りに)、横幅を広げることで、
+   始まりの角度を緩やかにする。基準は position:relative の #fv */
+.star--fv-anchor {
+   top: 98%;
+   left: 10%;
+}
+
+/* MODEL COURSE：境目よりわずかに手前(マイナス値=#model-courseの上端より上、
+   まだ#how-to-enjoy側)。ちょうど0%だと線の先端がわずかに境目をはみ出して
+   見えたため、少しだけ手前に戻す。04の星(left:88%)に近い位置にして、
+   最後の区間の横の振れも抑える。基準は position:relative の #model-course */
+.star--model-course-anchor {
+   top: -2%;
+   left: 78%;
 }
 
 /* ========================================
@@ -684,14 +719,15 @@ header.is-scrolled .header__ticket {
 }
 
 
-/* INTROの写真右上を星座の始点にする */
+/* INTROの写真右上を星座の始点にする。
+   HOW TO ENJOY側の星(13px/opacity:0.6)とサイズ・濃さを揃える */
 #intro .star {
-   width: 16px;
+   width: 13px;
    position: absolute;
    z-index: 2;
    top: -10px;
-   right: -8px;
-   opacity: 0.65;
+   right: -32px;
+   opacity: 0.6;
 }
 
 /* ========================================
@@ -716,6 +752,9 @@ header.is-scrolled .header__ticket {
 
 .how-to-enjoy__content {
    position: relative;
+   /* 星座線(z-index:1)がテキストの外側まで振れるようになったため、
+      写真と同じく明示的に手前へ出す(付けないと線がテキストの上にかぶる) */
+   z-index: 2;
    /* 1200px固定だと、画面幅1201〜1279pxで container(100%-80px)を超えて
       横スクロールが出るため上限指定にする */
    width: min(1200px, 100%);
@@ -1674,7 +1713,8 @@ footer {
    #intro .star,
    .star--enjoy01,
    .star--enjoy02,
-   .star--enjoy03 {
+   .star--enjoy03,
+   .star--enjoy04 {
       display: none;
    }
 

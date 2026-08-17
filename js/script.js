@@ -42,6 +42,66 @@ window.addEventListener('resize', updateHeader);
 window.addEventListener('load', updateHeader);
 
 
+// points(星の座標)から、角を丸めた曲線のパス文字列を作る
+function buildSmoothPath(points) {
+   // 点が2つ以下なら曲線にしようがないので、直線でつなぐ
+   if (points.length < 3) {
+      return points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
+   }
+
+   // 曲線のふくらみの強さ。1なら星の座標そのまま。
+   // 大きくするほど、星から外側へ大きく膨らんで緩やかになる
+   const curveStrength = 1.6;
+
+   // 見えない境目の点(hidden)のすぐ隣は、大きく振れた星と繋がることが多く、
+   // 同じ強さで伸ばすと境目の手前でフックのように折れてしまう。
+   // そこだけ伸ばさない(=星の座標そのまま)弱い強さにする
+   const edgeCurveStrength = 1;
+
+   // 最初の点から描き始める
+   let d = `M ${points[0].x} ${points[0].y}`;
+   let prevMid = points[0];
+
+   // 間の点(01〜02の間、02〜03の間…)を、次の点との中点まで曲線でつなぐ。
+   // 最後の区間だけは、中点ではなく本当に最後の点まで曲線を伸ばす
+   // (前は直線で締めていたが、そこだけ折れて見えていたため)
+   for (let i = 1; i < points.length - 1; i++) {
+      const current = points[i];
+      const next = points[i + 1];
+      const isLastSegment = i === points.length - 2;
+
+      const nextMid = isLastSegment
+         ? next
+         : {
+              x: (current.x + next.x) / 2,
+              y: (current.y + next.y) / 2,
+           };
+
+      // 弱めるのは「これから見えない点(境目)へ向かう区間」だけにする。
+      // 「見えない点から出てきた直後の区間」(起点→intro)まで弱めると、
+      // そこは元々ちょうど良かったのに不自然な境目ができてしまうため
+      const isApproachingHiddenPoint = next.hidden;
+      const strength = isApproachingHiddenPoint ? edgeCurveStrength : curveStrength;
+
+      // prevMid〜nextMidを結んだ弦の真ん中から星へ向かう向きに、
+      // strength倍だけ遠くへ伸ばした点をコントロールポイントにする。
+      // これにより、鋭角だった折れ目が丸くなるだけでなく、
+      // 横に長い区間(01→02など)も緩やかな弧を描くようになる
+      const chordMidX = (prevMid.x + nextMid.x) / 2;
+      const chordMidY = (prevMid.y + nextMid.y) / 2;
+
+      const control = {
+         x: chordMidX + (current.x - chordMidX) * strength,
+         y: chordMidY + (current.y - chordMidY) * strength,
+      };
+
+      d += ` Q ${control.x} ${control.y} ${nextMid.x} ${nextMid.y}`;
+      prevMid = nextMid;
+   }
+
+   return d;
+}
+
 // 星座の線を描画する関数
 function drawConstellation() {
     const svg = document.getElementById('constellation-svg');
@@ -55,6 +115,9 @@ function drawConstellation() {
         return {
             x: rect.left + rect.width / 2,
             y: rect.top + scrollY + rect.height / 2,
+            // FV・MODEL COURSEの見えない通過点には data-star-hidden を付けてある。
+            // 線の形には使うが、マーカーの丸は描かないようにする
+            hidden: el.hasAttribute('data-star-hidden'),
         };
     });
 
@@ -64,7 +127,10 @@ function drawConstellation() {
 );
     svg.setAttribute('height', document.body.scrollHeight);
 
-    const d = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
+    // FV・MODEL COURSEには「見えない通過点」(opacity:0の星)を置いてあるので、
+    // 座標を計算で作らなくても、points(すべてのdata-star要素)をそのまま
+    // buildSmoothPathに渡すだけで、境目付近も含めて自然な曲線になる
+    const d = buildSmoothPath(points);
 
     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     path.setAttribute('d', d);
@@ -74,8 +140,11 @@ function drawConstellation() {
     path.setAttribute('stroke-opacity', '0.4');
     svg.appendChild(path);
 
-    // 星本体(◆)も同じ座標にまとめて描く場合はここでcircle/pathを追加
+    // 星本体(◆)も同じ座標にまとめて描く場合はここでcircle/pathを追加。
+    // ただし見えない通過点(FV・MODEL COURSE)には丸を描かない
     points.forEach((p, i) => {
+        if (p.hidden) return;
+
         const star = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         star.setAttribute('cx', p.x);
         star.setAttribute('cy', p.y);
