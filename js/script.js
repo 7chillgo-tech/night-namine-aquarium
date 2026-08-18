@@ -115,6 +115,7 @@ let constellationLength = 0;
 // 星座の線を描画する関数
 function drawConstellation() {
     const svg = document.getElementById('constellation-svg');
+    if (!svg) return; // 下層ページには#constellation-svgが無いので、ここで抜ける
     svg.innerHTML = '';
 
     const stars = document.querySelectorAll('[data-star]');
