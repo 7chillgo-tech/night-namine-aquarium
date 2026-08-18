@@ -1197,26 +1197,6 @@ header.is-scrolled .header__ticket {
 }
 
 
-/*　ボタン */
-#model-course .button {
-   color: var(--color-white);
-   border-color: rgba(255, 255, 255, 0.6);
-}
-
-#model-course .button::after {
-   color: var(--color-navy);
-   background-color: var(--color-white);
-}
-
-#model-course .button:hover {
-   color: var(--color-white);
-   border-color: var(--color-white);
-}
-
-#model-course .button:hover::after {
-   background-color: #c6e4e7;
-}
-
 
 /* ========================================
    NEWS
@@ -2164,11 +2144,6 @@ footer {
       font-size: 18px;
    }
 
-   #model-course .button {
-      gap: 18px;
-      font-size: 14px;
-   }
-
    /* 4項目を画面幅の中で4等分 */
    .model-course__list {
       display: grid;
@@ -2877,17 +2852,6 @@ footer {
    .model-course__title {
       margin: 0 0 8px;
       font-size: 15px;
-   }
-
-   /* section-title と同じ理由で、1200px用の #model-course .button が
-      スマホ用の .button に勝ってしまうため、ここでも指定し直す */
-   #model-course .button {
-      order: 1;
-      /* order 0 のまま残るタイムラインより後ろへ */
-      align-self: center;
-      margin-top: 48px;
-      gap: 20px;
-      font-size: 13px;
    }
 
    /* ▼ 縦型タイムラインに作り替える。
