@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">夜のなみね水族館</title>
+  <defs>
+    <mask id="crescent-mask">
+      <rect width="64" height="64" fill="black"/>
+      <circle cx="31" cy="25" r="14" fill="white"/>
+      <circle cx="38" cy="20" r="13" fill="black"/>
+    </mask>
+  </defs>
+
+  <rect width="64" height="64" rx="15" fill="#183B4E"/>
+  <circle cx="31" cy="25" r="14" fill="#F3F0E8" mask="url(#crescent-mask)"/>
+  <path
+    d="M12 45c5-4 10-4 15 0s10 4 15 0 10-4 15 0"
+    fill="none"
+    stroke="#F3F0E8"
+    stroke-width="3"
+    stroke-linecap="round"
+  />
+  <path
+    d="M17 52c4-3 8-3 12 0s8 3 12 0 8-3 12 0"
+    fill="none"
+    stroke="#F3F0E8"
+    stroke-width="2"
+    stroke-linecap="round"
+    opacity="0.78"
+  />
+</svg>

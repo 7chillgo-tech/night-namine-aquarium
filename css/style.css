@@ -718,6 +718,20 @@ header.is-scrolled .header__ticket {
    z-index: 2;
 }
 
+/* 写真の縁を背景に馴染ませるグロー(box-shadow)。CLAUDE.mdで決めていた値を
+   そのまま使用。box-shadowが円の縁に沿うよう border-radius:50% も付けている
+   (写真自体は円形に切り抜かれたPNGだが、コンテナは四角のまま) */
+.photo-glow {
+   border-radius: 50%;
+   box-shadow: 0 0 120px 25px rgba(82, 161, 177, 0.35);
+}
+
+.photo-glow-small {
+   /* 小さい円は面積比で弱く見えるため、相対的に強めにする */
+   border-radius: 50%;
+   box-shadow: 0 0 90px 20px rgba(82, 161, 177, 0.4);
+}
+
 
 /* INTROの写真右上を星座の始点にする。
    HOW TO ENJOY側の星(13px/opacity:0.6)とサイズ・濃さを揃える */
@@ -1183,26 +1197,6 @@ header.is-scrolled .header__ticket {
 }
 
 
-/*　ボタン */
-#model-course .button {
-   color: var(--color-white);
-   border-color: rgba(255, 255, 255, 0.6);
-}
-
-#model-course .button::after {
-   color: var(--color-navy);
-   background-color: var(--color-white);
-}
-
-#model-course .button:hover {
-   color: var(--color-white);
-   border-color: var(--color-white);
-}
-
-#model-course .button:hover::after {
-   background-color: #c6e4e7;
-}
-
 
 /* ========================================
    NEWS
@@ -1664,6 +1658,193 @@ footer {
    text-align: center;
 }
 
+/* チケットページ
+   ①概要・②料金表・③注意事項を、それぞれ別の箱として離して並べる。
+   「携帯で見た時くらいの近さ」を狙って、PCでも中身の幅は絞ったまま
+   左右の余白を大きく取る */
+.ticket-page {
+   padding: 100px 0 160px;
+}
+
+.ticket-blocks {
+   width: min(600px, 100%);
+   margin-inline: auto;
+   display: flex;
+   flex-direction: column;
+   gap: 32px;
+}
+
+.ticket-block {
+   /* 真っ白(#fff)だとクリーム色の背景に対して浮きすぎて見えたため、
+      クリームを混ぜた白 + 少し透過させて背景に馴染ませる。
+      (前回よりわずかに白寄りに調整) */
+   background-color: rgba(252, 251, 248, 0.9);
+   border-radius: 24px;
+   overflow: hidden;
+   box-shadow: 0 20px 48px rgba(24, 59, 78, 0.12);
+}
+
+/* ①②のタイトル部分。番号(①②)は削除し、代わりに背景色を敷いた
+   帯にして「見出し」だと一目でわかるようにする。
+   navy地に太字は主張が強すぎたため、元のblue-300+navy文字に戻し、
+   文字の太さだけ700→500に落として軽さを出している */
+.ticket-block__title {
+   padding: 18px 32px;
+   background-color: var(--color-blue-300);
+   color: var(--color-navy);
+   font-size: 17px;
+   font-weight: 500;
+   letter-spacing: 0.08em;
+}
+
+.ticket__table {
+   width: 100%;
+   border-collapse: collapse;
+}
+
+.ticket__table th,
+.ticket__table td {
+   padding: 16px 32px;
+   text-align: left;
+   font-size: 16px;
+   font-weight: 400;
+   letter-spacing: 0.04em;
+}
+
+/* ラベル(th)は左、値(td)は右に寄せて「台帳」のような2列の型に揃える。
+   .ticket-card__summary-value(①側)も同じ右寄せにして型を揃えている */
+.ticket__table td {
+   text-align: right;
+   font-family: "DM Sans", sans-serif;
+}
+
+.ticket-block--price .ticket__table tr:not(:last-child) th,
+.ticket-block--price .ticket__table tr:not(:last-child) td {
+   border-bottom: 1px solid var(--color-navy-alpha-10);
+}
+
+/* 「区分/料金」のラベル行は本文より少し軽く見せる。
+   「料金」ラベルは下に並ぶ金額(右寄せ)と縦に揃うよう、これだけ右寄せにする */
+.ticket-block--price .ticket__table tr:first-child th {
+   font-weight: 500;
+   color: var(--color-sns-title);
+}
+
+.ticket-block--price .ticket__table tr:first-child th:last-child {
+   text-align: right;
+}
+
+.ticket-block--price .ticket__table td {
+   font-weight: 500;
+}
+
+/* ① 概要:文字だけのtableだと見た目の手がかりが無く読みにくかったため、
+   news__itemと同じ「アイコン+テキスト」の並びに変更。
+   アイコンはnewsページで使っているものをそのまま流用(新規画像なし) */
+.ticket-card__summary-item {
+   display: flex;
+   align-items: center;
+   gap: 18px;
+   padding: 14px 32px;
+   letter-spacing: 0.04em;
+}
+
+.ticket-card__summary-item:not(:last-child) {
+   border-bottom: 1px solid var(--color-navy-alpha-10);
+}
+
+.ticket-card__summary-icon {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   width: 44px;
+   height: 44px;
+   flex-shrink: 0;
+   background-color: var(--color-icon-bg);
+   border-radius: 50%;
+}
+
+.ticket-card__summary-icon img {
+   width: auto;
+   height: auto;
+   max-width: 22px;
+   max-height: 22px;
+}
+
+.ticket-card__summary-label {
+   font-size: 16px;
+}
+
+/* 期間・時刻の値は右端に寄せ、②の料金と同じ「台帳」の型を保つ */
+.ticket-card__summary-value {
+   margin-left: auto;
+   font-family: "DM Sans", sans-serif;
+}
+
+/* ③ 注意事項:箱の中で一段トーンを落とし、注釈らしく小さく見せる */
+.ticket-card__notice {
+   padding: 28px 32px 4px;
+}
+
+.ticket-card__notice li:not(:last-child) {
+   margin-bottom: 10px;
+}
+
+.ticket-card__notice .ticket__description {
+   font-size: 13px;
+   line-height: 1.8;
+   letter-spacing: 0.04em;
+   color: var(--color-sns-title);
+}
+
+/* 「架空サイトのため実際には購入できません」だけ、色は付けつつ
+   太字にはせず「※」を頭に付けて注釈の並びの中で自然に目立たせる */
+.ticket-card__notice-highlight .ticket__description {
+   color: var(--color-gold);
+}
+
+.ticket-card__notice-highlight .ticket__description::before {
+   content: "※ ";
+}
+
+/* CTA:③の箱の最後にボタンを置く。ホームの#ticketセクションで
+   使っている紺のピル型ボタンと同じ骨格(min-width/border-radius:999px)
+   に揃えることで、サイト内の「購入ボタン」の見た目を統一する */
+.ticket-card__cta {
+   display: flex;
+   justify-content: center;
+   padding: 32px 32px 36px;
+}
+
+.ticket-card__cta .button {
+   min-width: 240px;
+   justify-content: space-between;
+   padding: 14px 16px 14px 28px;
+   color: var(--color-white);
+   background-color: var(--color-navy);
+   border: none;
+   border-radius: 999px;
+   box-shadow: 0 10px 24px rgba(24, 59, 78, 0.25);
+}
+
+.ticket-card__cta .button::after {
+   color: var(--color-navy);
+   background-color: var(--color-white);
+}
+
+.ticket-card__cta .button:hover {
+   gap: 28px;
+   color: var(--color-white);
+   background-color: var(--color-button-hover);
+   border-color: var(--color-button-hover);
+   transform: translateY(-2px);
+   box-shadow: 0 14px 28px rgba(24, 59, 78, 0.3);
+}
+
+.ticket-card__cta .button:hover::after {
+   background-color: var(--color-white);
+}
+
 /* ========================================
    小さいPC 1024×768
 ======================================== */
@@ -1961,11 +2142,6 @@ footer {
 
    .model-course__title {
       font-size: 18px;
-   }
-
-   #model-course .button {
-      gap: 18px;
-      font-size: 14px;
    }
 
    /* 4項目を画面幅の中で4等分 */
@@ -2678,17 +2854,6 @@ footer {
       font-size: 15px;
    }
 
-   /* section-title と同じ理由で、1200px用の #model-course .button が
-      スマホ用の .button に勝ってしまうため、ここでも指定し直す */
-   #model-course .button {
-      order: 1;
-      /* order 0 のまま残るタイムラインより後ろへ */
-      align-self: center;
-      margin-top: 48px;
-      gap: 20px;
-      font-size: 13px;
-   }
-
    /* ▼ 縦型タイムラインに作り替える。
       横並びのままだと時系列がZ字に飛んで、時間の流れが読めなくなるため。
       ゴールドの線が上から下へ降りる形になり、コンセプトはむしろ強く出る */
@@ -3048,6 +3213,74 @@ footer {
 
    .news-page {
       padding: 64px 0 96px;
+   }
+
+   .ticket-page {
+      padding: 64px 0 96px;
+   }
+
+   .ticket-blocks {
+      gap: 24px;
+   }
+
+   .ticket-block {
+      border-radius: 18px;
+   }
+
+   .ticket-block__title {
+      padding: 14px 24px;
+      font-size: 15px;
+   }
+
+   .ticket__table th,
+   .ticket__table td {
+      padding: 14px 24px;
+      font-size: 13px;
+   }
+
+   .ticket-card__summary-item {
+      gap: 14px;
+      padding: 12px 24px;
+   }
+
+   .ticket-card__summary-icon {
+      width: 36px;
+      height: 36px;
+   }
+
+   .ticket-card__summary-icon img {
+      max-width: 18px;
+      max-height: 18px;
+   }
+
+   .ticket-card__summary-label,
+   .ticket-card__summary-value {
+      font-size: 13px;
+   }
+
+   .ticket-card__notice {
+      padding: 20px 24px 4px;
+   }
+
+   .ticket-card__notice .ticket__description {
+      font-size: 12px;
+   }
+
+   .ticket-card__cta {
+      padding: 24px 24px 32px;
+   }
+
+   /* width:100% + space-betweenのままだと、文字と矢印アイコンの間の
+      隙間が伸びるだけでなく、幅が足りないと日本語テキスト側が文字の
+      間で折り返されて2行になっていた。#ticket .buttonと同じく
+      width:autoにして文字量に合った幅まで縮め、はみ出す時だけ
+      max-width:100%で頭打ちにする */
+   .ticket-card__cta .button {
+      width: auto;
+      max-width: 100%;
+      min-width: 0;
+      gap: 20px;
+      padding: 12px 14px 12px 22px;
    }
 }
 
