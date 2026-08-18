@@ -2,23 +2,23 @@
   <title>館内カフェメニュー</title>
   <path
     d="M12 19h23v8a9 9 0 0 1-9 9h-5a9 9 0 0 1-9-9v-8Z"
-    fill="#F3F0E8"
+    fill="#fff"
     stroke="#183B4E"
-    stroke-width="4"
+    stroke-width="3.5"
     stroke-linecap="round"
     stroke-linejoin="round"
   />
   <path
     d="M35 22h2.5a4.5 4.5 0 0 1 0 9H34"
     stroke="#183B4E"
-    stroke-width="4"
+    stroke-width="3"
     stroke-linecap="round"
     stroke-linejoin="round"
   />
   <path
     d="M9 40h31M19 14c-2-2.2 2.2-3.6 0-6M27 14c-2-2.2 2.2-3.6 0-6"
     stroke="#183B4E"
-    stroke-width="4"
+    stroke-width="3"
     stroke-linecap="round"
   />
 </svg>

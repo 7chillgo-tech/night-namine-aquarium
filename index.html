@@ -25,6 +25,13 @@
 </head>
 
 <body>
+    <!-- ローディング画面。FVの背景画像等の読み込みが終わるまで表示する -->
+    <div id="loader" class="loader" aria-hidden="true">
+        <img src="logo/logo-star.svg" class="loader__star" alt="">
+        <p class="loader__text">LOADING</p>
+        <div class="loader__line"></div>
+    </div>
+
     <!-- 星座の線 -->
     <svg id="constellation-svg"></svg>
 
@@ -116,7 +123,7 @@
                                 ひとりの夜をお楽しみください。<br>
                             </p>
 
-                            <a href="#how-to-enjoy-title" class="button">夜の過ごし方をみる</a>
+                            <a href="#model-course-title" class="button">夜の過ごし方をみる</a>
                         </div><!-- /.intro__content -->
                     </div><!-- /.intro__left -->
 
@@ -388,7 +395,7 @@
                         <div class="access__cards">
                             <div class="access__card">
                                 <div class="access__icon"><img src="icons/access_icon_address.svg" alt="住所アイコン"></div>
-                                <h3 class="access__label">所在地</h3>
+                                <h3 class="access__label">住所</h3>
                                 <p class="access__description">愛媛県今治市 <br class="br-sp">大島・吉海町エリア<span
                                         class="access__note">※「なみね水族館」は架空の施設です</span></p>
                             </div><!--/.access__card-->
@@ -460,8 +467,6 @@
                         <li><a href="#access-title">アクセス</a></li>
                         <li><a href="ticket.html">チケット</a></li>
                     </ul>
-                    <a href="#" class="footer__link button">
-                        なみね水族館公式サイト</a>
                 </nav>
 
 

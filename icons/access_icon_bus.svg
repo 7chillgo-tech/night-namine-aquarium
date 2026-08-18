@@ -12,19 +12,19 @@
    C6 14.2 6.4 13.5 7 13Z" fill="#183B4E"/>
 
 <!-- 窓 -->
-<rect x="10" y="13" width="8" height="8" rx="1" fill="#F3F0E8"/>
-<rect x="20" y="13" width="8" height="8" rx="1" fill="#F3F0E8"/>
+<rect x="10" y="13" width="8" height="8" rx="1" fill="#fff"/>
+<rect x="20" y="13" width="8" height="8" rx="1" fill="#fff"/>
 
 <!-- 前方の窓 -->
 <path d="M30 13H33
    C36.5 13 38 15.2 38 18
-   V21H30Z" fill="#F3F0E8"/>
+   V21H30Z" fill="#fff"/>
 
 <!-- タイヤ -->
 <circle cx="14" cy="33" r="4" fill="#183B4E"/>
 <circle cx="35" cy="33" r="4" fill="#183B4E"/>
 
 <!-- ホイール -->
-<circle cx="14" cy="33" r="1.5" fill="#F3F0E8"/>
-<circle cx="35" cy="33" r="1.5" fill="#F3F0E8"/>
+<circle cx="14" cy="33" r="1.5" fill="#fff"/>
+<circle cx="35" cy="33" r="1.5" fill="#fff"/>
 </svg>

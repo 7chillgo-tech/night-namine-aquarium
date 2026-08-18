@@ -6,6 +6,17 @@
 const motionMedia = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 
+// ローディング画面(index.htmlのみ #loader が存在する)。
+// window の load は画像を含めた全リソースの読み込み完了後に発火するので、
+// FVの背景画像が読み終わったタイミングで消える
+const loader = document.getElementById('loader');
+if (loader) {
+   window.addEventListener('load', () => {
+      loader.classList.add('is-hidden');
+   });
+}
+
+
 // スクロール時にヘッダーの背景色を変更する
 const header = document.querySelector('header');
 const headerLogo = document.querySelector('.header__logo img');
@@ -69,7 +80,6 @@ function buildSmoothPath(points) {
 
    // 間の点(01〜02の間、02〜03の間…)を、次の点との中点まで曲線でつなぐ。
    // 最後の区間だけは、中点ではなく本当に最後の点まで曲線を伸ばす
-   // (前は直線で締めていたが、そこだけ折れて見えていたため)
    for (let i = 1; i < points.length - 1; i++) {
       const current = points[i];
       const next = points[i + 1];
@@ -187,15 +197,9 @@ function drawConstellation() {
     });
 }
 
-// pathの中で、y座標がtargetYに一番近い位置(=線の先端からの距離)を
-// 二分探索で見つける。
-// 最初「ページ全体のスクロール%」で線の進み具合を決めていたが、
-// 星座線はHOW TO ENJOYでジグザグに大きく横へ振れる区間と、
-// ほぼまっすぐ縦に伸びる区間が混ざっているため、スクロール%と
-// 線の長さ%がまったく対応せず、今見ている場所より線が
-// 手前で止まって見える(=「途中で消えている」ように見える)原因になっていた。
-// 実際のy座標で探すことで、今スクロールして見えている高さと
-// 線の先端がずれないようにする
+// pathの中で、y座標がtargetYに一番近い位置(=線の先端からの距離)を二分探索で見つける。
+// スクロール%ではなく実際のy座標で探すことで、線がジグザグでも
+// 今見えている高さと線の先端がずれないようにする
 function getLengthAtY(path, totalLength, targetY, iterations = 24) {
     let lo = 0;
     let hi = totalLength;
@@ -252,60 +256,12 @@ if (document.fonts && document.fonts.ready) {
 }
 
 
-// 背景画像の軽いパララックス(FV・MODEL COURSE・TICKET)。
-// スクロールに対して背景だけをわずかに遅らせて動かし、奥行きを出す。
-//
-// 【重要】縦方向(background-position-y)ではなく横方向をずらす。
-// これらの写真はどれも横長で、background-size:coverだと縦方向の
-// はみ出し(=動かせる余白)がほぼ0になる(例:modelcourse.jpgは1445×600で
-// 横に長いため、箱の高さに合わせて拡大すると縦の余白が消える)。
-// その状態で縦にずらすと、写真の上下に背景色(何もない部分)が
-// 見えてしまう。横方向は余白が十分あるので、そちらを揺らす
-const parallaxSections = [
-    { el: document.getElementById('fv'), naturalWidth: 1440, naturalHeight: 850 },
-    { el: document.getElementById('model-course'), naturalWidth: 1445, naturalHeight: 600 },
-    { el: document.getElementById('ticket'), naturalWidth: 1672, naturalHeight: 941 },
-].filter(item => item.el);
-
-function updateParallax() {
-    if (!parallaxSections.length || motionMedia.matches) return;
-
-    const viewportHeight = window.innerHeight;
-
-    parallaxSections.forEach(({ el, naturalWidth, naturalHeight }) => {
-        const rect = el.getBoundingClientRect();
-        const boxWidth = rect.width;
-        const boxHeight = rect.height;
-        if (!boxWidth || !boxHeight) return;
-
-        // background-size:coverと同じ考え方で、実際に表示される画像の
-        // 横幅(拡大後)を求める
-        const coverScale = Math.max(boxWidth / naturalWidth, boxHeight / naturalHeight);
-        const renderedWidth = naturalWidth * coverScale;
-
-        // 画像が箱よりどれだけ横にはみ出しているか。その半分までしか
-        // ずらせない(それ以上ずらすと画像の端(=はみ出していない側)が
-        // 見えてしまう)
-        const maxOffset = Math.max((renderedWidth - boxWidth) / 2, 0);
-
-        // 画面の縦中央からどれだけ離れているか(px)を、揺れの元にする
-        const distanceFromCenter = rect.top + boxHeight / 2 - viewportHeight / 2;
-        const speed = 0.05;
-        const offset = Math.max(Math.min(distanceFromCenter * speed, maxOffset), -maxOffset);
-
-        // background-positionのX成分だけを上書きする。
-        // Y成分(top / 50%)は元々のCSS(background-position)のまま生きる
-        el.style.backgroundPositionX = `calc(50% + ${offset}px)`;
-    });
-}
-
-// 星座線の伸び具合とパララックスは、どちらもスクロール位置に依存するので
+// 星座線の伸び具合は、スクロール位置に依存するので
 // 1つのrequestAnimationFrameにまとめて、スクロール中の負荷を抑える
 let scrollEffectsTicking = false;
 
 function updateScrollEffects() {
     updateConstellationDraw();
-    updateParallax();
     scrollEffectsTicking = false;
 }
 
@@ -314,9 +270,6 @@ window.addEventListener('scroll', () => {
     scrollEffectsTicking = true;
     requestAnimationFrame(updateScrollEffects);
 });
-
-window.addEventListener('load', updateParallax);
-window.addEventListener('resize', debounce(updateParallax));
 
 
 // MODEL COURSE・TICKET(暗いセクション)で、マウスに柔らかい光が追従する演出。
@@ -375,9 +328,7 @@ const menuButton = document.querySelector('.header__menu-button');
 const nav = document.querySelector('.header__nav');
 
 if (menuButton && nav) {
-   // 開閉に必要な処理を1か所にまとめる。
-   // 以前は「開く」と「閉じる」で別々に書いていたため、
-   // 片方に処理を足すともう片方に足し忘れる作りになっていた
+   // 開閉に必要な処理を1か所にまとめる(開く/閉じるで別々に書くと直し忘れが起きるため)
    function setMenu(isOpen) {
       header.classList.toggle('is-menu-open', isOpen);
 

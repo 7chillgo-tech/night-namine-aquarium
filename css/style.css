@@ -72,16 +72,6 @@ ol {
 
 }
 
-/* 【保留】2026-08-18
-   .section-title の基準を.containerに移す案を試したが、セクションごとに
-   padding-top(intro/how-to-enjoy=120px, news/access=150px, ticket=flex中央寄せ)
-   が違うため、top:80pxの意味がセクションごとにズレてしまい、
-   INTROでタイトルが本文に重なる形で表面化した。
-   やるなら「.containerをposition:relativeにする」だけでなく、
-   セクションごとにtop値を(80 - そのセクションのpadding-top)へ
-   個別に補正する必要がある。締切が近いため今回は見送り、
-   #intro等のsection-titleは元の「セクション基準」のままにしてある */
-
 #intro,
 #how-to-enjoy,
 #model-course,
@@ -92,10 +82,7 @@ ol {
 
 }
 
-/* ナビはセクションの先頭ではなく見出し(.section-title)へ直接飛ばす。
-   セクションごとに見出しの位置(absolute の top値)が違うため、
-   セクション側にscroll-margin-topを付けるより、見出し自身に付けたほうが
-   どのセクションでも同じ88px(ヘッダー高さ分)で正しく合う */
+/* セクションではなく見出し自身にscroll-margin-topを付ける(位置ズレ防止) */
 .section-title {
    scroll-margin-top: 88px;
 }
@@ -107,6 +94,118 @@ ol {
    width: 100%;
    pointer-events: none;
    z-index: 1;
+}
+
+/* ========================================
+   ローディング画面(index.htmlのみ)
+======================================== */
+
+/* 画像の読み込みが終わるまで画面を覆う。js/script.jsがwindowのload時に
+   is-hiddenを付けて消す */
+.loader {
+   position: fixed;
+   inset: 0;
+   z-index: 9999;
+
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+
+   background-color: var(--color-navy);
+
+   opacity: 1;
+   visibility: visible;
+   transition:
+      opacity 0.6s ease,
+      visibility 0.6s ease;
+}
+
+.loader.is-hidden {
+   opacity: 0;
+   visibility: hidden;
+   pointer-events: none;
+}
+
+.loader__star {
+   width: 22px;
+   height: 22px;
+   margin-bottom: 28px;
+   /* 星と文字の間 */
+   animation: loader-pulse 1.6s ease-in-out infinite;
+}
+
+.loader__text {
+   margin-bottom: 16px;
+   font-family: "DM Sans", sans-serif;
+   font-size: 13px;
+   letter-spacing: 0.3em;
+   /* 字間ぶん右にずれて見えるので、左にも同じ幅を入れて中央を保つ */
+   padding-left: 0.3em;
+   color: var(--color-cream);
+}
+
+.loader__line {
+   position: relative;
+   width: 90px;
+   height: 1px;
+   overflow: hidden;
+   background-color: rgba(243, 240, 232, 0.2);
+}
+
+/* ラインの上を、金色の光が左から右へゆっくり流れる */
+.loader__line::after {
+   content: "";
+   position: absolute;
+   inset: 0;
+   left: -40%;
+   width: 40%;
+   background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+   animation: loader-line-sweep 1.8s ease-in-out infinite;
+}
+
+@keyframes loader-pulse {
+
+   0%,
+   100% {
+      opacity: 0.35;
+      transform: scale(0.85);
+   }
+
+   50% {
+      opacity: 1;
+      transform: scale(1.1);
+   }
+}
+
+@keyframes loader-line-sweep {
+   0% {
+      left: -40%;
+   }
+
+   100% {
+      left: 100%;
+   }
+}
+
+/* 動きを減らす設定の人には点滅・光の流れを止める(ただの静止した目印として見せる) */
+@media (prefers-reduced-motion: reduce) {
+   .loader__star {
+      animation: none;
+      opacity: 0.8;
+   }
+
+   .loader__line::after {
+      animation: none;
+      left: 0;
+      width: 100%;
+      background: var(--color-gold);
+      opacity: 0.5;
+   }
+
+   .loader {
+      transition: none;
+   }
 }
 
 /* ========================================
@@ -173,8 +272,7 @@ ol {
 
 /* リンクのホバー(ボタン以外) */
 
-/* 明るい背景の上に乗るリンクは、ボタンと同じホバー色に揃える。
-   色の変化だけでは気づきにくいため、下線も併せて出す */
+/* ホバー時、色だけでなく下線も出して気づきやすくする */
 .footer__navigation ul a,
 .news__description a,
 .news__event-description a {
@@ -190,8 +288,7 @@ ol {
    /* 日本語の文字と下線がくっつかないよう離す */
 }
 
-/* ヘッダーのナビは背景が写真だったり明るい面だったりと一定でないため、
-   色を変えず不透明度で反応させる */
+/* 背景が写真だったり明るい面だったりと一定でないため、色でなく不透明度で反応 */
 .header__nav a:not(.header__ticket) {
    transition: opacity 0.3s ease;
 }
@@ -263,11 +360,8 @@ ol {
    z-index: 2;
 }
 
-/* HOW TO内の通過点。基準は position:relative の .how-to-enjoy__item。
-   テキスト列の外側(=1200px列の外の余白)まで振ることで、線がジグザグに
-   大きく寄り道するようにしている。0%を切る/100%を超えるのは想定通り
-   (写真・テキストが無い、背景だけの余白に出ている)。
-   ここの数値を動かすと線の通り道が変わる */
+/* HOW TO内の通過点。テキスト列の外側まで振って線をジグザグにする。
+   0%未満/100%超は仕様通り(余白部分に出ている)。基準は.how-to-enjoy__item */
 .star--enjoy01,
 .star--enjoy02,
 .star--enjoy03,
@@ -308,19 +402,13 @@ ol {
    opacity: 0;
 }
 
-/* FV：境目より少し手前。ちょうど境目(100%)だと線の出だしとの間に
-   隙間が空いて見えたため、わずかにFV側へ戻す。
-   introの星とはできるだけ離して(左寄りに)、横幅を広げることで、
-   始まりの角度を緩やかにする。基準は position:relative の #fv */
+/* FV:セクション境目のわずか手前(隙間・はみ出し防止)。基準は#fv */
 .star--fv-anchor {
    top: 98%;
    left: 10%;
 }
 
-/* MODEL COURSE：境目よりわずかに手前(マイナス値=#model-courseの上端より上、
-   まだ#how-to-enjoy側)。ちょうど0%だと線の先端がわずかに境目をはみ出して
-   見えたため、少しだけ手前に戻す。04の星(left:88%)に近い位置にして、
-   最後の区間の横の振れも抑える。基準は position:relative の #model-course */
+/* MODEL COURSE:同じくセクション境目のわずか手前。基準は#model-course */
 .star--model-course-anchor {
    top: -2%;
    left: 78%;
@@ -359,9 +447,7 @@ body.is-menu-locked {
    overflow: hidden;
 }
 
-/* JSが logo-main-fff.svg(142×66)と logo-main.svg(228×105)を差し替えるため、
-   幅を指定しないと切り替わるたびに表示サイズが変わってしまう。
-   幅を固定し、is-scrolled への変化だけをアニメーションさせる */
+/* JSがロゴ画像を差し替えるので、幅を固定してサイズジャンプを防ぐ */
 .header__logo img {
    width: 142px;
    height: auto;
@@ -479,11 +565,7 @@ header.is-scrolled .header__ticket {
 #fv {
    position: relative;
 
-   /* スマホの 100vh は「URLバーが隠れたときの高さ」なので、
-      初回表示ではFVの下端が画面の外に出てしまう。
-      100svh(small viewport height)は「URLバーが出ている状態の高さ」なので、
-      どの状態でもぴったり収まる。
-      1行目は svh に未対応のブラウザ用の保険。上書きされるので順番が大事 */
+   /* 100vhはスマホのURLバー分ずれるため、100svhで上書き(1行目は未対応ブラウザ用) */
    height: 100vh;
    height: 100svh;
    min-height: 700px;
@@ -718,9 +800,7 @@ header.is-scrolled .header__ticket {
    z-index: 2;
 }
 
-/* 写真の縁を背景に馴染ませるグロー(box-shadow)。CLAUDE.mdで決めていた値を
-   そのまま使用。box-shadowが円の縁に沿うよう border-radius:50% も付けている
-   (写真自体は円形に切り抜かれたPNGだが、コンテナは四角のまま) */
+/* 写真の縁を背景に馴染ませるグロー。円形の写真に沿うようborder-radiusも付ける */
 .photo-glow {
    border-radius: 50%;
    box-shadow: 0 0 120px 25px rgba(82, 161, 177, 0.35);
@@ -766,11 +846,9 @@ header.is-scrolled .header__ticket {
 
 .how-to-enjoy__content {
    position: relative;
-   /* 星座線(z-index:1)がテキストの外側まで振れるようになったため、
-      写真と同じく明示的に手前へ出す(付けないと線がテキストの上にかぶる) */
+   /* 星座線がテキスト外側まで振れるため、線より手前に明示的に出す */
    z-index: 2;
-   /* 1200px固定だと、画面幅1201〜1279pxで container(100%-80px)を超えて
-      横スクロールが出るため上限指定にする */
+   /* 1200px固定だと画面幅1201〜1279pxで横スクロールが出るため上限指定 */
    width: min(1200px, 100%);
    height: 740px;
 }
@@ -786,10 +864,7 @@ header.is-scrolled .header__ticket {
 
 .how-to-enjoy__item--01,
 .how-to-enjoy__item--02 {
-   /* 680px固定だと、画像が画面幅によって150〜360px程度まで縮む今の比率
-      (724/391)では中身より箱が大きくなりすぎ、align-items:centerの
-      効果で上下に大きな余白ができていた(901px付近が一番目立つ)。
-      中身の高さに任せるのが安全 */
+   /* 高さ固定だと画像縮小時に箱が大きすぎて上下に余白ができるため中身に任せる */
    min-height: 0;
 }
 
@@ -803,10 +878,7 @@ header.is-scrolled .header__ticket {
 }
 
 .how-to-enjoy__item--01 .how-to-enjoy__content {
-   /* 380px だと padding-left:66px を引いて文字幅314px。
-      いちばん長い行「大水槽の前や、お気に入りの水槽のそばには、」が
-      21文字 × 18px = 378px あり、64px あふれて折り返していた。
-      460px にすると 460 − 66 = 394px 確保でき、16px の余裕が出る */
+   /* 見出し・本文がPC表示で折り返さずに収まる最小幅 */
    grid-template-columns: 460px 1fr;
    grid-template-areas:
       "title image"
@@ -842,8 +914,7 @@ header.is-scrolled .header__ticket {
    align-self: start;
    margin-top: 16px;
 
-   /* タイトルは .number-badge(56px) + margin-right(10px) の分だけ
-      文字が右から始まるので、説明文も同じだけ下げて左端を揃える */
+   /* タイトルの.number-badgeぶん字下げして、説明文の左端を揃える */
    padding-left: 66px;
 }
 
@@ -856,11 +927,8 @@ header.is-scrolled .header__ticket {
    grid-area: image;
    width: 100%;
 
-   /* height を固定pxにすると、画面幅で列が伸縮するたびに枠の比率が変わり、
-      object-fit:cover の切り取られ方も変わってしまう
-      (1024px幅では 404×350 = ほぼ正方形になり、横の約4割が失われていた)。
-      元画像 howtoenjoy_01.jpg は 732×412 = 1.777 で 16/9(1.778)とほぼ同じ。
-      枠を同じ比率にすれば、どの画面幅でも切り取りがほぼゼロになる */
+   /* 高さ固定だと画面幅ごとに比率が変わり切り取られ方が安定しないため、
+      元画像とほぼ同じ16/9のaspect-ratioで揃える */
    aspect-ratio: 16 / 9;
 
    border-radius: 48px;
@@ -897,10 +965,7 @@ header.is-scrolled .header__ticket {
 
    width: 100%;
 
-   /* 中の3枚は下方をトリミングして 724×391 = 1.852 になった。
-      枠を16/9(1.778)のままにすると object-fit:cover が高さを基準に
-      拡大し、左右が削れてブロブの肩が切れてしまうため、
-      元画像の実際の比率に揃える */
+   /* 16/9のままだとcoverで左右が削れブロブの肩が切れるため元画像の比率に揃える */
    aspect-ratio: 724 / 391;
 
    border-radius: 36px;
@@ -1033,6 +1098,21 @@ header.is-scrolled .header__ticket {
    position: relative;
    color: var(--color-white);
 
+   background-image: url(../images/modelcourse.jpg);
+   background-repeat: no-repeat;
+   background-position: center top;
+   background-size: cover;
+   padding-top: 80px;
+}
+
+/* 写真を読みやすくする暗いグラデーション。写真本体とは別レイヤー(::before)にする */
+#model-course::before {
+   content: "";
+   position: absolute;
+   inset: 0;
+   z-index: 1;
+   pointer-events: none;
+
    background-image:
       linear-gradient(to bottom,
          rgba(2, 22, 39, 0.48) 0%,
@@ -1050,13 +1130,7 @@ header.is-scrolled .header__ticket {
          /* 左半分は写真のまま */
          rgba(2, 22, 39, 0.25) 75%,
          /* 4項目目の文字がこのあたり */
-         rgba(2, 22, 39, 0.5) 100%),
-      url(../images/modelcourse.jpg);
-
-   background-repeat: no-repeat;
-   background-position: center top;
-   background-size: cover;
-   padding-top: 80px;
+         rgba(2, 22, 39, 0.5) 100%);
 }
 
 
@@ -1265,16 +1339,23 @@ header.is-scrolled .header__ticket {
    font-weight: 500;
 }
 
-/* まとまりの左端の、さらに外側に出す */
+/* まとまりの左端のさらに外側に出す。丸背景(pill)で背景から浮かせる */
 .news__event-new {
    position: absolute;
    right: 100%;
    /* 右端を親の左端に合わせる */
    margin-right: 16px;
    /* 日付との間隔 */
+
+   padding: 3px 10px;
+   border-radius: 999px;
+   background-color: var(--color-navy);
+
    color: var(--color-gold);
    /* = #C3A364 */
+   font-size: 11px;
    font-weight: 700;
+   letter-spacing: 0.05em;
 }
 
 .news__event-description {
@@ -1332,6 +1413,13 @@ header.is-scrolled .header__ticket {
    max-height: 24px;
 }
 
+/* 夜・カフェのSVGは絵柄が枠に対して小さく作られているため、他と揃うよう大きくする */
+.news__icon img[src$="news_icon_night.svg"],
+.news__icon img[src$="news_icon_cafe.svg"] {
+   max-width: 30px;
+   max-height: 30px;
+}
+
 /* news装飾 */
 
 #news .star {
@@ -1339,8 +1427,7 @@ header.is-scrolled .header__ticket {
    width: 15px;
 }
 
-/* cream→#B6C7D2 は振れ幅が大きく、intro〜how-to-enjoyと同じく
-   切り替わりが目立っていたため、隣り合う blue-400〜blue-300 に絞った */
+/* 色差が大きいと切り替わりが目立つため、隣り合うblue-400〜300に絞る */
 .news-access-bg {
    background: linear-gradient(to bottom, var(--color-blue-400) 0%, var(--color-blue-300) 100%);
 }
@@ -1399,8 +1486,9 @@ header.is-scrolled .header__ticket {
    width: 50px;
    height: 50px;
 
-   /* 背景(#B6C7D2)と近い半透明クリームだと円が沈むため、不透明のクリームにする */
-   background-color: var(--color-cream);
+   /* icon-bgだと背景(blue-300)に沈んで見えたため、icon-bgとcreamの中間の
+      blue-400にして、明るすぎず・沈みすぎない中間の見え方にする */
+   background-color: var(--color-blue-400);
    border-radius: 50%;
 
    margin-bottom: 16px;
@@ -1520,7 +1608,7 @@ footer {
    display: flex;
    align-items: flex-start;
    justify-content: space-between;
-   min-height: 320px;
+   min-height: 260px;
    padding-top: 100px;
 }
 
@@ -1588,15 +1676,10 @@ footer {
    opacity: 0.75;
 }
 
-/* .button と併用。display は .button の inline-flex に任せる
-   (ここで display を指定すると後勝ちで矢印のレイアウトが崩れる) */
-.footer__link {
-   margin-top: 20px;
-}
 
 .footer__copyright {
    text-align: center;
-   padding: 100px;
+   padding: 60px 0;
 }
 
 /* ========================================
@@ -1658,10 +1741,7 @@ footer {
    text-align: center;
 }
 
-/* チケットページ
-   ①概要・②料金表・③注意事項を、それぞれ別の箱として離して並べる。
-   「携帯で見た時くらいの近さ」を狙って、PCでも中身の幅は絞ったまま
-   左右の余白を大きく取る */
+/* チケットページ:概要・料金表・注意事項を別の箱に分けて並べる */
 .ticket-page {
    padding: 100px 0 160px;
 }
@@ -1675,22 +1755,17 @@ footer {
 }
 
 .ticket-block {
-   /* 真っ白(#fff)だとクリーム色の背景に対して浮きすぎて見えたため、
-      クリームを混ぜた白 + 少し透過させて背景に馴染ませる。
-      (前回よりわずかに白寄りに調整) */
+   /* 真っ白だとクリーム背景から浮くため、クリーム寄り+半透明にして馴染ませる */
    background-color: rgba(252, 251, 248, 0.9);
    border-radius: 24px;
    overflow: hidden;
    box-shadow: 0 20px 48px rgba(24, 59, 78, 0.12);
 }
 
-/* ①②のタイトル部分。番号(①②)は削除し、代わりに背景色を敷いた
-   帯にして「見出し」だと一目でわかるようにする。
-   navy地に太字は主張が強すぎたため、元のblue-300+navy文字に戻し、
-   文字の太さだけ700→500に落として軽さを出している */
+/* タイトルに背景色の帯を敷いて見出しだと一目でわかるようにする */
 .ticket-block__title {
    padding: 18px 32px;
-   background-color: var(--color-blue-300);
+   background-color: var(--color-icon-bg);
    color: var(--color-navy);
    font-size: 17px;
    font-weight: 500;
@@ -1711,8 +1786,7 @@ footer {
    letter-spacing: 0.04em;
 }
 
-/* ラベル(th)は左、値(td)は右に寄せて「台帳」のような2列の型に揃える。
-   .ticket-card__summary-value(①側)も同じ右寄せにして型を揃えている */
+/* ラベル(th)は左、値(td)は右に寄せて台帳のような型に揃える */
 .ticket__table td {
    text-align: right;
    font-family: "DM Sans", sans-serif;
@@ -1723,8 +1797,7 @@ footer {
    border-bottom: 1px solid var(--color-navy-alpha-10);
 }
 
-/* 「区分/料金」のラベル行は本文より少し軽く見せる。
-   「料金」ラベルは下に並ぶ金額(右寄せ)と縦に揃うよう、これだけ右寄せにする */
+/* 「区分/料金」のラベル行は本文より軽く。「料金」は下の金額と縦に揃える */
 .ticket-block--price .ticket__table tr:first-child th {
    font-weight: 500;
    color: var(--color-sns-title);
@@ -1738,9 +1811,7 @@ footer {
    font-weight: 500;
 }
 
-/* ① 概要:文字だけのtableだと見た目の手がかりが無く読みにくかったため、
-   news__itemと同じ「アイコン+テキスト」の並びに変更。
-   アイコンはnewsページで使っているものをそのまま流用(新規画像なし) */
+/* ① 概要:news__itemと同じ「アイコン+テキスト」の並び(アイコンは流用) */
 .ticket-card__summary-item {
    display: flex;
    align-items: center;
@@ -1771,6 +1842,12 @@ footer {
    max-height: 22px;
 }
 
+/* 夜のSVGは絵柄が枠に対して小さく作られているため、他と揃うよう大きくする */
+.ticket-card__summary-icon img[src$="news_icon_night.svg"] {
+   max-width: 27px;
+   max-height: 27px;
+}
+
 .ticket-card__summary-label {
    font-size: 16px;
 }
@@ -1797,8 +1874,7 @@ footer {
    color: var(--color-sns-title);
 }
 
-/* 「架空サイトのため実際には購入できません」だけ、色は付けつつ
-   太字にはせず「※」を頭に付けて注釈の並びの中で自然に目立たせる */
+/* 注意書きの中でも「架空サイト」表記だけ色+「※」を付けて目立たせる */
 .ticket-card__notice-highlight .ticket__description {
    color: var(--color-gold);
 }
@@ -1807,9 +1883,7 @@ footer {
    content: "※ ";
 }
 
-/* CTA:③の箱の最後にボタンを置く。ホームの#ticketセクションで
-   使っている紺のピル型ボタンと同じ骨格(min-width/border-radius:999px)
-   に揃えることで、サイト内の「購入ボタン」の見た目を統一する */
+/* CTA:ホームの#ticketと同じ紺のピル型ボタンで購入ボタンの見た目を統一 */
 .ticket-card__cta {
    display: flex;
    justify-content: center;
@@ -1851,10 +1925,7 @@ footer {
 
 @media (max-width: 1200px) {
 
-   /* 800pxはPCフル幅(1200px前後)向けの半径。1024px前後だと円が画面幅に対して
-      大きすぎ、色の薄まる78%〜100%が画面外に出て中心の濃い色だけが目立つのは
-      スマホと同じ現象。ここは768pxのようにグラデ自体を変えるのではなく、
-      円のまま半径だけ600pxに縮める */
+   /* この幅では円の半径だけ600pxに縮める(768px以下はグラデ自体を変更) */
    .intro-how-to-bg {
       background:
          radial-gradient(circle 600px at 40% 15%,
@@ -1881,15 +1952,9 @@ footer {
          var(--color-cream);
    }
 
-   /* 星座線・通過点の星は、フル幅PC(1201px以上)だけで見せる。
-      1200px以下は幅が狭くなるにつれ線・星が窮屈に詰まって見えるため、
-      このブロックでまとめて隠す(以前は768pxだけで隠していたが、
-      1201px未満は全部同じ理由で隠したいので範囲をここまで広げた)。
-      display:none にすると getBoundingClientRect() が全て0を返すため、
-      JSが線を左上(0,0)に向かって描いてしまう。だから星だけでなく
-      #constellation-svg も一緒に隠す。
-      .star をまとめて消すと、NEWS見出しの装飾星(.star--event / .star--info)まで
-      消えてしまうので、対象は「線の通過点」の星だけに絞る */
+   /* 星座線はフル幅PC(1201px以上)だけで見せる(狭いと窮屈に詰まるため)。
+      SVGも一緒に隠す(display:noneだとJSの座標取得が0になり線が壊れるため)。
+      .starを一括で消すとNEWSの装飾星も消えるので対象は線の通過点のみに絞る */
    #constellation-svg,
    #intro .star,
    .star--enjoy01,
@@ -1965,11 +2030,8 @@ footer {
       margin-top: 16px;
    }
 
-   /* メニューを開いた時のTICKETが、パネルの背景(rgba(24,59,78,0.96))と
-      ボタン既定の背景(rgba(24,59,78,0.72))がほぼ同じ色で埋もれて見えていた。
-      .header__ticket:hover と同じ「クリーム地に紺文字」を、開いている間の
-      既定の見た目として使う。is-scrolled等と同時に有効になっても負けないよう、
-      それらの上書きルールより詳細度を上げてある */
+   /* パネルの背景とボタン既定色がほぼ同じで埋もれるため、hover時と同じ配色にする。
+      is-scrolled等より優先させるため詳細度を上げてある */
    header.is-menu-open .header__nav a.header__ticket,
    header.is-menu-open.is-scrolled .header__nav a.header__ticket {
       color: var(--color-navy);
@@ -2081,24 +2143,8 @@ footer {
       height: 700px;
    }
 
-   /* 01・02の説明文について:
-   もともと position:absolute で座標を直打ちしていた頃の名残で、
-   ここに left / top / width % が残っていた。
-   その後 01・02 は CSS Grid に作り替えて position:static になったので、
-   left / top は効かず、width だけが効いてしまい、
-   380pxのグリッド列 × 55% − padding-left 66px = 文字幅143px まで潰れていた。
-   グリッドの列幅に任せるのが正しいので、指定ごと削除する */
-
-   /* 01・02の写真について:
-   ここには left / top / width% / height が並んでいたが、全て削除した。
-
-   ・left / top … Grid に作り替えた時点で効かなくなっていた名残
-   ・width:70% / 75% … グリッドの列幅に任せれば列いっぱいに広がる。
-     残すと写真の右に宙に浮いた余白ができる
-   ・height:350px / 400px … 基本側を aspect-ratio: 16/9 にしたので不要。
-     ここで固定pxに戻すと、この幅帯だけ比率が変わって切り取られ方が変わる
-
-   → 幅も高さも指定しないのが正解。基本側の指定がそのまま効く */
+   /* 01・02の説明文・写真は、Gridの列幅にそのまま任せるのが正しいため
+      幅・高さ・位置の個別指定はここでは行わない */
 
    /* 03 */
    .how-to-enjoy__gallery--03 {
@@ -2235,14 +2281,8 @@ footer {
 
    .news__item {
       display: grid;
-      /* 220px固定だと、お知らせ一覧(news.html)の長いタイトル
-      「夏季夜間営業の開催が決まりました」などが入りきらず2行に折れていた。
-      minmax(220px, auto) + justify-content:center にすると今度は逆に、
-      行ごとに文章の長さが違うぶん中央寄せの中身の幅が変わり、
-      アイコンの位置が行ごとに左右へばらついて縦一列に揃わなくなる
-      (768px用のルールで先に見つけて直した不具合と同じもの)。
-      1fr にすれば残り幅いっぱいまで伸びるので、220pxの2行折れも
-      アイコンのばらつきもどちらも起きない */
+      /* 固定幅だと長いタイトルが折れ、minmax+centerだとアイコンが行ごとに
+         ばらつくため、1frで残り幅いっぱいに伸ばして両方防ぐ */
       grid-template-columns: 50px 1fr;
       grid-template-rows: auto auto;
 
@@ -2290,20 +2330,8 @@ footer {
 
 /* ========================================
    タブレット 〜900px
-   HOW TO ENJOY 01・02 のみ。
-
-   テキスト列460px + gap80px を横に並べると、写真の列が
-   1024pxで405px、901pxで281pxまで細くなる。
-   写真は aspect-ratio:16/9 なので、細くなった分そのまま背も低くなる
-   (405→228px、281→158px)。769pxまで下ると149pxで成立しないため、
-   900pxを境に縦積みへ切り替える。積むと 820×461 の大きな写真になる。
-
-   ※境界を1024pxにする案も試したが、横並びを早く畳むぶん
-     405×228 → 944×531 と写真の変化が大きく、900pxを採用した。
-
-   ※このブロックは必ず @media (max-width: 768px) より前に置くこと。
-     同じ強さの指定は後に書いたほうが勝つため、順序が逆だと
-     900px用がスマホ用を上書きしてしまう
+   HOW TO ENJOY 01・02のみ。写真が細くなりすぎるためこの幅で縦積みに切り替える。
+   ※必ず @media (max-width: 768px) より前に置くこと(後勝ちのため逆順だと壊れる)
 ======================================== */
 
 @media (max-width: 900px) {
@@ -2313,12 +2341,7 @@ footer {
       min-height: 0;
    }
 
-   /* 1200pxブロックで height:700px の直値が入っているので、
-      縦積みで中身が伸びた分を高さに追従させる。
-      03は縦積みにしない(display:blockにしていない)ので対象外にする。
-      ここが01・02と一緒くたに全項目へ効いていたため、03の
-      .how-to-enjoy__content が height:auto で潰れ、中の絶対配置(gallery/description)
-      が本来の位置からズレて画面外に消えていた */
+   /* 縦積みで伸びた中身に高さを追従させる。03は対象外(03だけ縦積みにしないため) */
    .how-to-enjoy__item--01 .how-to-enjoy__content,
    .how-to-enjoy__item--02 .how-to-enjoy__content {
       height: auto;
@@ -2334,10 +2357,6 @@ footer {
 }
 
 /* ========================================
-   ウツボ：動き減らす設定用
-======================================== */
-
-/* ========================================
    スマホ 〜768px
    方針:横スクロールと文字の溢れを出さないこと。
    固定px幅をやめ、多カラムは全て1カラムに積む
@@ -2345,23 +2364,9 @@ footer {
 
 @media (max-width: 768px) {
 
-   /* circle 800pxはPC(横幅1200px前後)向けの半径で、丸いブルームが
-      3つ並ぶ見た目だった。スマホでは円ベースの見た目自体をやめて、
-      #news→#access(.news-access-bg)と同じ「上から下」の直線グラデーションにする。
-
-      .intro-how-to-bg(#intro〜#how-to-enjoyをまとめて包む枠)1枚に
-      グラデーションを1回だけ流すと、#how-to-enjoyが長いぶんその大部分が
-      薄いクリームで埋まってしまう。#intro・#how-to-enjoyそれぞれに
-      個別でグラデーションを持たせ、#how-to-enjoyの頭でまた
-      blue-100から始まるようにして、2つ分の「波」として繋げる。
-
-      #how-to-enjoyは向きを反転(to top)させ、#introの底と#how-to-enjoyの頭が
-      同じ色で揃うようにして、境目で色が折り返さず自然に繋がるようにする。
-
-      色の振れ幅は blue-300〜blue-400 の隣り合う2色だけに絞る。
-      (以前は blue-100〜blue-400 で振れ幅が大きく、明暗の切り替わりが
-      目立っていた。「切り替わったと分からないくらい」の変化量にするため、
-      パレットの中でいちばん近い2色だけを使う) */
+   /* スマホでは円ベースをやめ、上から下への直線グラデーションにする。
+      #intro・#how-to-enjoyそれぞれに個別で持たせ、#how-to-enjoy側は向きを
+      反転(to top)させて境目の色を揃え、1つに繋がった波に見せる */
    .intro-how-to-bg {
       background: none;
    }
@@ -2378,33 +2383,23 @@ footer {
             var(--color-blue-400) 100%);
    }
 
-   /* スマホ列の幅。以前は 260px 固定で、iPhone 15 Pro Max(430px)のような
-      横幅の広い端末でも画面の6割程度しか使えていなかった。
-      clamp(最小, 基準, 最大)で画面幅の68%を基準にしつつ、
-      小さい端末では260px相当を下限に、大きい端末でも340pxで頭打ちにする。
-      この値は目安なので、実機で見て気になったらここだけ直せば
-      .mobile-cta__button・.how-to-enjoy__gallery--03・.footer__content>* の
-      4箇所すべてに反映される */
+   /* スマホ列の幅。clamp(260px, 68vw, 340px)で端末幅に応じて可変にする。
+      ここを直せば.mobile-cta__button等の関連4箇所すべてに反映される */
    :root {
       --sp-col: clamp(260px, 68vw, 340px);
    }
 
-   /* 左右の余白を20px→28pxへ。参考サイト(apple-q.jp)と同じ値。
-      端に文字が寄らなくなり、1行の折り返し位置も安定して読みやすくなる。
-      ※画面端まで広げている地図とドリンクの横スワイプは、
-        この28pxを打ち消す指定なので同時に直すこと */
+   /* 左右の余白を20px→28pxへ。画面端まで広げている地図・ドリンクの
+      横スワイプは、この28pxを打ち消す指定なので変更時は同時に直すこと */
    .container {
       width: calc(100% - 56px);
 
-      /* フッターで使っている列を、FV以外の全セクションに広げる。
-         ページ全体が縦一本の細い列として読めるようになる。
-         .container は margin:0 auto なので、上限を付けるだけで中央に寄る。
-         画面が --sp-col + 56px より狭い端末では width 側が勝つので潰れない */
+      /* フッターと同じ列幅を全セクションに広げ、縦一本の細い列に見せる */
       max-width: var(--sp-col);
    }
 
    /* ---- セクションタイトル ----
-      PCでは left:130px の絶対配置。スマホでは幅が足りないので流し込みに戻す */
+      PCではleft:130pxの絶対配置。スマホでは幅が足りないので流し込みに戻す */
    .section-title {
       position: static;
       font-size: 15px;
@@ -2419,10 +2414,8 @@ footer {
       padding-top: 64px;
    }
 
-   /* PCは高さ88pxの固定ヘッダーの下に隠れないよう88px空けていたが、
-      スマホではヘッダーの帯そのものを無くした(height:0)ので、
-      88pxのままだとメニューから飛んだとき上に無駄な空白ができる。
-      浮いているハンバーガー(top:20px + 44px = 64px)に少し足した値にする */
+   /* スマホはヘッダーの帯自体が無い(height:0)ため、88pxのままだと
+      メニューから飛んだ時に無駄な空白ができる。浮いているハンバーガー分に合わせる */
    #intro,
    #how-to-enjoy,
    #model-course,
@@ -2446,9 +2439,7 @@ footer {
    }
 
    /* ---- FV ---- */
-   /* fv.png は 1672×941 の横長。縦長の画面では高さ基準で拡大され左右が大きく削られる。
-      center のままだと元は右寄りの女性が画面中央へ寄り、左寄せのコピーと重なるので、
-      表示位置を右へずらして文字と人物を分ける */
+   /* 縦長画面だと高さ基準で拡大され、人物が中央に寄ってコピーと重なるため右へずらす */
    #fv {
       min-height: 560px;
       background-position: 42% top;
@@ -2563,10 +2554,8 @@ footer {
    }
 
    /* ---- ヘッダー ----
-      参考サイト(apple-q.jp)と同じ考え方で、スマホでは「帯」としてのヘッダーを持たず、
-      右上に浮かぶハンバーガーだけにする。
-      画面上部が常に写真やコピーのために空くので、1画面の情報量が増える。
-      ロゴはフッターに置いてあるため、ここでは落とす */
+      スマホでは帯としてのヘッダーを持たず、右上のハンバーガーだけにする。
+      ロゴはフッターにあるためここでは落とす */
    header,
    header.is-scrolled {
       height: 0;
@@ -2612,20 +2601,14 @@ footer {
       transition: background-color 0.35s ease;
    }
 
-   /* FV・MODEL COURSE・TICKET(暗い背景)では 30% でも白い線が読めるが、
-      INTRO〜HOW TO ENJOY(水色〜クリーム)や NEWS・ACCESS の上では
-      薄すぎて線が背景に溶ける。
-      script.js が背景の明暗を見て header に is-dark を付け外ししているので、
-      その判定をボタンの背景にも使い、明るいセクションでは濃くする */
+   /* 明るいセクションでは薄い背景だとボタンの線が溶けて見えるため濃くする */
    header:not(.is-dark) .header__menu-button {
       background: rgba(2, 22, 39, 0.6);
    }
 
    /* ---- INTRO ---- */
-   /* ボタンをセクションの一番下(写真より後ろ)へ動かす。
-      ボタンは .intro__content の中にあり、PCでは左カラムの一部なのでHTMLは動かせない。
-      代わりに .intro__left と .intro__content を display:contents で「箱だけ消し」、
-      中身を .container の直接の子として扱えるようにしてから order で並べ替える */
+   /* ボタンを写真より後ろへ動かすため、display:contentsで箱だけ消して
+      中身を.containerの直接の子にしてからorderで並べ替える */
    #intro .container {
       display: flex;
       flex-direction: column;
@@ -2667,8 +2650,7 @@ footer {
    }
 
    /* ---- HOW TO ENJOY ----
-      PCは position:absolute と直値で組まれているので、
-      スマホでは全て解除して「タイトル→写真→説明文」の縦積みに戻す */
+      PCのposition:absolute/直値を全て解除し、縦積みに戻す */
    .how-to-enjoy__item,
    .how-to-enjoy__item--01,
    .how-to-enjoy__item--02 {
@@ -2676,8 +2658,7 @@ footer {
       padding: 40px 0;
    }
 
-   /* 基本指定が width:1200px / height:740px の直値。
-      01・02はより詳細な指定で100%になるが、03は素通りして溢れるので全て上書きする */
+   /* 03は基本指定の直値をそのまま受けて溢れるため、ここで全て上書きする */
    .how-to-enjoy__content {
       width: 100%;
       height: auto;
@@ -2719,13 +2700,8 @@ footer {
       border-radius: 24px;
    }
 
-   /* --02 の中の3枚は position:absolute; inset:0 なので、
-      親を static にすると写真が親から外れて飛び出す。
-      relative のまま left だけ打ち消す。
-
-      中の3枚は下方をトリミング済みで 724×391 = 1.852。
-      PC側と同じく元画像の実際の比率に揃えて、object-fit:cover による
-      左右・上下の切り取りが起きないようにする */
+   /* 中の3枚がposition:absoluteのため、親はrelativeのままleftだけ打ち消す。
+      アスペクト比はPC側と同じ元画像の比率に揃え、cover時の切り取りを防ぐ */
    .how-to-enjoy__image--02 {
       position: relative;
       left: auto;
@@ -2743,24 +2719,17 @@ footer {
       gap: 16px;
       margin-top: 24px;
 
-      /* カードが画面の端で切れることで「横に続いている」と一目で伝わる。
-         コンテナが可変幅(--sp-col)になっても追従するよう、固定pxではなく
-         画面幅を基準にする。50% は親の幅の半分、50vw は画面の半分なので、
-         その差だけ左右へはみ出せばちょうど画面の端に届く。padding は
-         同じ量を逆向きに戻して中身の開始位置を保つ。
-         地図(.access__map-wrap)と同じ手法 */
+      /* 画面幅基準ではみ出させ、カードが端で切れて「続きがある」と伝える。
+         可変コンテナに追従する。地図(.access__map-wrap)と同じ手法 */
       width: 100vw;
       margin-inline: calc(50% - 50vw);
       padding-inline: calc(50vw - (var(--sp-col) / 2));
 
       overflow-x: auto;
       scroll-snap-type: x mandatory;
-      /* カードがぴたっと止まる */
 
-      /* これが無いと、スナップが1枚目を「スクロール領域の左端」に合わせようとして
-         読み込み時に padding のぶん(120px)だけ勝手にスクロールし、
-         カードが画面の左端に張り付いてしまう。
-         スナップ位置にも同じ余白があることを伝えて止める */
+      /* paddingと同じ余白をスナップ位置にも伝えないと、読み込み時に
+         1枚目が勝手にスクロールしてしまう */
       scroll-padding-inline: calc(50vw - (var(--sp-col) / 2));
 
       padding-bottom: 8px;
@@ -2823,10 +2792,7 @@ footer {
       padding-bottom: 72px;
    }
 
-   /* ボタンをセクションの一番下(タイムラインより後ろ)へ動かす。
-      PCでは .model-course__header が「ラベル|見出し|ボタン」の3列グリッドなので
-      HTML上は動かせない。header を display:contents で消し、
-      中身を .model-course__content の直接の子にしてから order で並べ替える */
+   /* headerをdisplay:contentsで消し、中身を直接の子にしてorderで並べ替える */
    .model-course__content {
       display: flex;
       flex-direction: column;
@@ -2836,10 +2802,7 @@ footer {
       display: contents;
    }
 
-   /* 番号ラベルは全セクション左端に揃えるため、ここでは中央にしない。
-      display:contents で親の箱が消えているので、見出し側だけ中央を持たせ直す */
-   /* font-size を書かないと、1200px用の #model-course .section-title(詳細度1,1,0)が
-      スマホ用の .section-title(詳細度0,1,0)に勝ち、ここだけ20pxのまま残る */
+   /* 番号ラベルは左のまま、font-sizeは1200px用の指定に勝つよう明示し直す */
    #model-course .section-title {
       text-align: left;
       font-size: 15px;
@@ -2854,11 +2817,7 @@ footer {
       font-size: 15px;
    }
 
-   /* ▼ 縦型タイムラインに作り替える。
-      横並びのままだと時系列がZ字に飛んで、時間の流れが読めなくなるため。
-      ゴールドの線が上から下へ降りる形になり、コンセプトはむしろ強く出る */
-   /* コンテナが260pxになったぶん、線に使う余白を56→40pxに詰めて
-      文章欄の幅を確保する(132px → 160px) */
+   /* 横並びだと時系列がZ字に飛ぶため、縦型タイムラインに作り替える */
    .model-course__list {
       display: block;
       margin-top: 48px;
@@ -2902,12 +2861,8 @@ footer {
       margin-top: 14px;
    }
 
-   /* 丸を各項目の左、線の上に置く。
-
-      線は .model-course__list の左端から 23px、幅1px なので中心は 23.5px。
-      丸は li(= list の padding-left 40px の位置から始まる)を基準にするため、
-      左端が 40-21=19px、幅9pxで中心 23.5px となり、線の中心と一致する。
-      ※ list の padding-left を変えたら、この値も同じだけ変えること */
+   /* 丸を各項目の左、線の上に置く(線の中心と丸の中心が揃う位置に計算済み)。
+      ※.model-course__listのpadding-leftを変えたらこの値も同じだけ変えること */
    .model-course__item::before {
       top: 50%;
       left: -21px;
@@ -2970,11 +2925,7 @@ footer {
       max-width: 100%;
    }
 
-   /* 右列(INFORMATION)は 12px / 13px に落としてあるのに、
-      左列(EVENT)だけ基本の16pxのまま残っていて、並べると左だけ大きく見えた。
-      右列と同じ段に揃える。
-      あわせて、NEWバッジ(right:100% で塊の外に出している)の
-      左の逃げも広がるので、はみ出しの心配も減る */
+   /* 右列(INFORMATION)と文字サイズを揃える */
    .news__event-date {
       font-size: 12px;
    }
@@ -2983,9 +2934,7 @@ footer {
       font-size: 13px;
    }
 
-   /* 中央寄せ(grid-template-columns: 40px auto + justify-content: center)にすると、
-      行ごとに文章の長さが違うぶんアイコンの位置が左右にばらつき、
-      長い行は画面からはみ出す。1fr に戻してアイコンを縦一列に揃える */
+   /* 中央寄せだとアイコンの位置が行ごとにばらつくため、1frで縦一列に揃える */
    .news__item {
       display: grid;
       grid-template-columns: 40px 1fr;
@@ -3022,10 +2971,7 @@ footer {
       font-size: 13px;
    }
 
-   /* 文字だけのリンクは指で押す領域が19pxしかない。
-      padding で広げ、同じ量の負のマージンで打ち消すことで、
-      見た目の位置は変えずにタップ領域だけを大きくする。
-      行の上下 padding(16px)より小さい10pxなので、隣の行と重ならない */
+   /* paddingで広げ、同量の負マージンで打ち消して見た目を変えずタップ領域だけ拡大 */
    .news__description a,
    .news__event-description a {
       display: inline-block;
@@ -3042,9 +2988,7 @@ footer {
       height: 260px;
    }
 
-   /* 地図は画面幅いっぱいに。狭い画面では地図が大きいほど読み取りやすく、
-      セクションの区切りとしても効く。
-      コンテナ(260px)の外へ出して画面端に合わせる */
+   /* 地図はコンテナの外へ出して画面幅いっぱいに広げる */
    .access__map-wrap {
       width: 100vw;
       margin-inline: calc(50% - 50vw);
@@ -3100,10 +3044,9 @@ footer {
    }
 
    /* ---- TICKET ---- */
-   /* FVと同じく画面いっぱいの高さにして、ページの締めとして見せる。
-      #ticket は display:flex + align-items:center なので、中身は自動で上下中央に来る */
+   /* FVと同じく画面いっぱいの高さにして、ページの締めとして見せる */
    #ticket {
-      /* FVと同じ理由で svh を使う(下に固定バーが無い分、こちらは特に効く) */
+      /* FVと同じ理由でsvhを使う */
       min-height: 100vh;
       min-height: 100svh;
    }
@@ -3120,8 +3063,7 @@ footer {
       text-align: center;
    }
 
-   /* 260pxの列いっぱいに広がると押しボタンとして大きすぎたので、
-      文字量に見合う幅まで絞る(高さは48pxを確保してタップしやすさは維持) */
+   /* 列いっぱいだと大きすぎるため、文字量に見合う幅まで絞る */
    #ticket .button {
       min-width: 0;
       width: auto;
@@ -3132,9 +3074,7 @@ footer {
    }
 
    /* ---- footer ----
-      参考サイト(apple-q.jp)は、フッターの要素をすべて260pxの1列に揃えている。
-      幅が揃うとロゴ→ナビ→SNS→コピーライトが縦一本の塊として読めるので、
-      同じ考え方で中身の最大幅を揃える */
+      幅を揃え、ロゴ→ナビ→SNS→コピーライトが縦一本の塊として読めるようにする */
    .footer__content {
       display: block;
       min-height: 0;
@@ -3270,11 +3210,8 @@ footer {
       padding: 24px 24px 32px;
    }
 
-   /* width:100% + space-betweenのままだと、文字と矢印アイコンの間の
-      隙間が伸びるだけでなく、幅が足りないと日本語テキスト側が文字の
-      間で折り返されて2行になっていた。#ticket .buttonと同じく
-      width:autoにして文字量に合った幅まで縮め、はみ出す時だけ
-      max-width:100%で頭打ちにする */
+   /* width:100%だと日本語が折り返され2行になるため、#ticket .buttonと
+      同じくwidth:autoで文字量に合わせ、はみ出す時だけ100%で頭打ちにする */
    .ticket-card__cta .button {
       width: auto;
       max-width: 100%;
@@ -3378,11 +3315,8 @@ footer {
    カーソル追従の光(MODEL COURSE・TICKET)
 ======================================== */
 
-/* .cursor-glow(position:absolute)は素の状態でも本文より手前に描画されて
-   しまうため、本文側に明示的なz-indexを与えて上に出す。
-   .containerそのものにposition:relativeを付けると、.section-title(position:
-   absoluteで.containerを基準にしていない)の基準がズレて位置が崩れるため、
-   本文の塊(.model-course__content / .ticket__content)だけを個別に浮かせる */
+/* .cursor-glowが本文より手前に出てしまうため、本文の塊だけ個別にz-indexで浮かせる
+   (.containerに一括で付けると.section-titleの基準がズレて位置が崩れるため) */
 #model-course .model-course__content {
    position: relative;
    z-index: 2;
