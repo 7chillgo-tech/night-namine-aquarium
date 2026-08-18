@@ -1,0 +1,6 @@
+# ローカル専用(Claude Codeの作業メモ、GitHubには上げない)
+CLAUDE.md
+
+# OS/エディタが自動生成するファイル
+.DS_Store
+Thumbs.db
